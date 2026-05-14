@@ -1,0 +1,12 @@
+# PM Sweat robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /private
+Disallow: /api
+
+# Crawl delay
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://pm-sweat.vercel.app/sitemap.xml

@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from '../components/brand';
 import { PublicNav, Footer } from '../components/chrome';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { ShareButtons } from '../components/ShareButtons';
 
 export default function Landing({ onNav }) {
   const isMobile = useIsMobile();
@@ -285,6 +286,14 @@ export default function Landing({ onNav }) {
               </button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ─── SHARE ──────────────────────────────────────────── */}
+      <section className="container" style={{ padding: "32px 0 48px", textAlign: "center" }}>
+        <p className="t-small" style={{ marginBottom: 14, color: "var(--muted)" }}>Share PM Sweat</p>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <ShareButtons />
         </div>
       </section>
 

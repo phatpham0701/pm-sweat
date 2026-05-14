@@ -11,6 +11,7 @@ import { Login } from './screens/Login';
 import { Signup } from './screens/Signup';
 import { Profile } from './screens/Profile';
 import { useAuthStore } from './stores/authStore';
+import { Analytics } from '@vercel/analytics/react';
 import './styles.css';
 
 const ROUTE_MAP = {
@@ -85,6 +86,7 @@ function App() {
   return (
     <BrowserRouter>
       <AppRoutes />
+      <Analytics />
     </BrowserRouter>
   );
 }

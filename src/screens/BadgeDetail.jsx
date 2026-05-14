@@ -74,7 +74,14 @@ export default function BadgeDetail({ onNav }) {
               / badges / tier {String(selected).padStart(2, "0")}
             </span>
           </div>
-          <button className="btn btn-sm btn-secondary">
+          <button className="btn btn-sm btn-secondary" onClick={() => {
+            const badgeUrl = `${window.location.origin}/badge/${selected}`;
+            navigator.share?.({
+              title: 'I earned a badge on PM Sweat!',
+              text: `I just unlocked the ${tier.name} badge on PM Sweat!`,
+              url: badgeUrl,
+            });
+          }}>
             <Icon.ArrowUpRight size={14} /> Share verified passport
           </button>
         </div>
