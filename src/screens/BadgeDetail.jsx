@@ -130,11 +130,11 @@ export default function BadgeDetail({ onNav }) {
                 <span className="t-eyebrow">Unlocks at this tier</span>
                 <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>3 perks</span>
               </div>
-              <div style={{ borderTop: "1px solid var(--hairline)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+              <div style={{ borderTop: "1px solid var(--hairline)", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr" }}>
                 {unlocksFor(selected).map((u, i) => {
                   const IC = Icon[u.icon];
                   return (
-                    <div key={i} style={{ padding: 20, borderRight: i < 2 ? "1px solid var(--hairline)" : "none" }}>
+                    <div key={i} style={{ padding: 20, borderRight: !isMobile && i < 2 ? "1px solid var(--hairline)" : "none", borderTop: isMobile && i > 0 ? "1px solid var(--hairline)" : "none" }}>
                       <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--ink-04)",
                         display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
                         <IC size={16} color="var(--navy)" />

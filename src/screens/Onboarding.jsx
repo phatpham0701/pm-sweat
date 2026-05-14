@@ -127,24 +127,24 @@ function ProfileStep({ profile, onNext }) {
       <form id="profile-form" onSubmit={handleSubmit((data) => onNext({ ...data, primary }))} noValidate>
         <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <Field label="Display name" hint="As shown to partners" error={errors.name?.message}>
-            <input {...register("name")}
+            <input {...register("name")} autoComplete="name"
               style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--hairline)" }} />
           </Field>
           <Field label="Handle" hint="Unique · used in your match url" error={errors.handle?.message}>
             <div style={{ ...inputStyle, display: "flex", alignItems: "center", padding: "0 16px",
               borderColor: errors.handle ? "#ef4444" : "var(--hairline)" }}>
               <span style={{ color: "var(--muted)" }}>pmsweat.com/</span>
-              <input {...register("handle")}
+              <input {...register("handle")} autoComplete="username"
                 style={{ flex: 1, border: 0, outline: 0, background: "transparent", fontFamily: "inherit", fontSize: 15, padding: 0 }} />
               {!errors.handle && <Icon.CheckCircle size={18} color="var(--mint)" />}
             </div>
           </Field>
           <Field label="Age" hint="Bucketed to 25–34, 35–44 etc." error={errors.age?.message}>
-            <input {...register("age")} type="number"
+            <input {...register("age")} type="number" autoComplete="age"
               style={{ ...inputStyle, borderColor: errors.age ? "#ef4444" : "var(--hairline)" }} />
           </Field>
           <Field label="City / region" hint="Approximate · for local matches" error={errors.city?.message}>
-            <input {...register("city")} style={inputStyle} />
+            <input {...register("city")} autoComplete="address-level2" style={inputStyle} />
           </Field>
         </div>
       </form>

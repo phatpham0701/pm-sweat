@@ -262,7 +262,8 @@ export default function Landing({ onNav }) {
       {/* ─── FINAL CTA ──────────────────────────────────────── */}
       <section className="container" style={{ padding: "80px 0 0" }}>
         <div style={{
-          background: "var(--navy)", color: "white", borderRadius: 20, padding: "72px 64px",
+          background: "var(--navy)", color: "white", borderRadius: 20,
+          padding: isMobile ? "48px 28px" : "72px 64px",
           position: "relative", overflow: "hidden",
         }}>
           <div className="halo" style={{ inset: "auto -10% -40% auto", width: "60%", height: "100%" }} />
