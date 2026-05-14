@@ -1,6 +1,48 @@
 import React from 'react';
 import { Wordmark, Icon } from './brand';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useAuthStore } from '../stores/authStore';
+
+function AuthActions({ onNav, onDark, isMobile }) {
+  const { isLoggedIn, user, logout } = useAuthStore();
+
+  if (isLoggedIn) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        {!isMobile && (
+          <button onClick={() => onNav("profile")} className={`btn btn-sm ${onDark ? "btn-onDark-ghost" : "btn-ghost"}`} style={{ gap: 6 }}>
+            <span style={{
+              width: 22, height: 22, borderRadius: 999,
+              background: "var(--grad-earned)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              color: "white", fontSize: 10, fontWeight: 600,
+            }}>
+              {user?.name ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?'}
+            </span>
+            {user?.name?.split(' ')[0]}
+          </button>
+        )}
+        <button
+          onClick={() => { logout(); onNav("landing"); }}
+          className={`btn btn-sm ${onDark ? "btn-onDark-ghost" : "btn-secondary"}`}
+        >
+          Sign out
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      {!isMobile && (
+        <button onClick={() => onNav("login")} className={`btn btn-sm ${onDark ? "btn-onDark-ghost" : "btn-ghost"}`}>Sign in</button>
+      )}
+      <button onClick={() => onNav("signup")} className={`btn btn-sm ${onDark ? "btn-onDark" : "btn-primary"}`}>
+        {isMobile ? "Join" : "Get started"} <Icon.ArrowRight size={14} />
+      </button>
+    </div>
+  );
+}
 
 export function PublicNav({ onDark = false, onNav, route }) {
   const isMobile = useIsMobile();
@@ -34,14 +76,7 @@ export function PublicNav({ onDark = false, onNav, route }) {
           ))}
         </div>
       )}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {!isMobile && (
-          <button className={`btn btn-sm ${onDark ? "btn-onDark-ghost" : "btn-ghost"}`}>Sign in</button>
-        )}
-        <button onClick={() => onNav("onboarding")} className={`btn btn-sm ${onDark ? "btn-onDark" : "btn-primary"}`}>
-          {isMobile ? "Join" : "Get verified"} <Icon.ArrowRight size={14} />
-        </button>
-      </div>
+      <AuthActions onNav={onNav} onDark={onDark} isMobile={isMobile} />
     </nav>
   );
 }
@@ -96,6 +131,9 @@ export function ScreenJumper({ route, onNav }) {
     { id: "dashboard", label: "03 Dashboard" },
     { id: "badge", label: "04 Badge" },
     { id: "partners", label: "05 Partners" },
+    { id: "login", label: "06 Login" },
+    { id: "signup", label: "07 Signup" },
+    { id: "profile", label: "08 Profile" },
   ];
   return (
     <div className="screen-jumper" style={{
@@ -120,6 +158,7 @@ export function ScreenJumper({ route, onNav }) {
 }
 
 export function AppNav({ onNav, active = "dashboard" }) {
+  const { user, logout } = useAuthStore();
   const items = [
     { id: "dashboard", label: "Overview", icon: "Chart" },
     { id: "verify", label: "Verify", icon: "Verify" },
@@ -159,26 +198,48 @@ export function AppNav({ onNav, active = "dashboard" }) {
       })}
       <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 4 }}>
         <div className="t-eyebrow" style={{ padding: "0 8px 8px" }}>Account</div>
-        <button style={{
-          display: "flex", alignItems: "center", gap: 10, height: 36, padding: "0 10px",
-          borderRadius: 8, color: "var(--muted)", fontSize: 14,
-        }}>
+        <button
+          onClick={() => onNav && onNav("profile")}
+          style={{
+            display: "flex", alignItems: "center", gap: 10, height: 36, padding: "0 10px",
+            borderRadius: 8, color: "var(--muted)", fontSize: 14, transition: "all 150ms",
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.background = "var(--ink-04)"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+        >
           <Icon.Settings size={16} color="var(--muted)" />
-          <span>Settings</span>
+          <span>Profile</span>
         </button>
-        <div style={{
-          marginTop: 8, padding: 10, border: "1px solid var(--hairline)", borderRadius: 12,
-          display: "flex", alignItems: "center", gap: 10,
-        }}>
+        <button
+          onClick={() => { logout(); onNav && onNav("landing"); }}
+          style={{
+            display: "flex", alignItems: "center", gap: 10, height: 36, padding: "0 10px",
+            borderRadius: 8, color: "var(--muted)", fontSize: 14, transition: "all 150ms",
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.background = "var(--ink-04)"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+        >
+          <Icon.ArrowRight size={16} color="var(--muted)" style={{ transform: "rotate(180deg)" }} />
+          <span>Sign out</span>
+        </button>
+        <div
+          onClick={() => onNav && onNav("profile")}
+          style={{
+            marginTop: 8, padding: 10, border: "1px solid var(--hairline)", borderRadius: 12,
+            display: "flex", alignItems: "center", gap: 10, cursor: "pointer",
+          }}
+        >
           <div style={{
             width: 32, height: 32, borderRadius: 999,
             background: "var(--grad-earned)",
             display: "flex", alignItems: "center", justifyContent: "center",
             color: "white", fontFamily: "var(--font-mono)", fontWeight: 500, fontSize: 13,
-          }}>MN</div>
+          }}>
+            {user?.name ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?'}
+          </div>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.1 }}>Minh Ngọc</div>
-            <div className="t-mono" style={{ fontSize: 10, color: "var(--muted)", marginTop: 2 }}>tier 3 · signal</div>
+            <div style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.1 }}>{user?.name || 'Athlete'}</div>
+            <div className="t-mono" style={{ fontSize: 10, color: "var(--muted)", marginTop: 2 }}>@{user?.handle || 'user'}</div>
           </div>
         </div>
       </div>
