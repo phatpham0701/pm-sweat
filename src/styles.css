@@ -177,3 +177,34 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 0; }
 
 /* Hero typographic mark glow (mint) */
 .tag-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--mint); display: inline-block; }
+
+/* ─── Responsive breakpoints ─────────────────────────── */
+@media (max-width: 768px) {
+  .container { padding: 0 20px; }
+  .t-display { font-size: clamp(38px, 10vw, 64px); }
+  .t-h1 { font-size: 30px; }
+  .t-h2 { font-size: 22px; }
+  .sv-num { font-size: 64px; }
+
+  /* ScreenJumper pill — tighter on mobile */
+  .screen-jumper { gap: 4px !important; padding: 4px !important; }
+  .screen-jumper button { padding: 6px 10px !important; font-size: 10px !important; }
+
+  /* AppNav sidebar → top bar on mobile */
+  .app-nav-sidebar {
+    position: fixed; bottom: 0; left: 0; right: 0; top: auto !important;
+    width: 100% !important; height: 56px !important;
+    flex-direction: row !important; justify-content: space-around;
+    border-right: none !important; border-top: 1px solid var(--hairline);
+    padding: 0 !important; z-index: 100;
+    overflow: hidden;
+  }
+  .app-nav-sidebar .nav-logo { display: none !important; }
+  .app-nav-sidebar .nav-item {
+    flex-direction: column !important; gap: 3px !important;
+    font-size: 10px !important; padding: 8px 12px !important; border-radius: 0 !important;
+    flex: 1; justify-content: center; align-items: center;
+    text-align: center;
+  }
+  .app-main-content { padding-bottom: 56px; }
+}

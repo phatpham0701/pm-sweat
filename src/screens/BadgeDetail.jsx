@@ -1,8 +1,10 @@
 import React from 'react';
 import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function BadgeDetail({ onNav }) {
+  const isMobile = useIsMobile();
   const [selected, setSelected] = React.useState(3);
   const tiers = [
     { n: 1, name: "Foundation", cls: "tier-1", req: "Verified · consistent 4w", count: "All members" },
@@ -16,7 +18,7 @@ export default function BadgeDetail({ onNav }) {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "white" }}>
       <AppNav onNav={onNav} active="badges" />
-      <main style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
+      <main className="app-main-content" style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "20px 32px", borderBottom: "1px solid var(--hairline)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -30,7 +32,7 @@ export default function BadgeDetail({ onNav }) {
           </button>
         </div>
 
-        <div style={{ padding: 32, display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 32 }}>
+        <div style={{ padding: isMobile ? 16 : 32, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: isMobile ? 16 : 32 }}>
           <div>
             <span className="t-eyebrow">Badge ladder</span>
             <h2 className="t-h2" style={{ margin: "4px 0 24px" }}>Five tiers, earned in sequence.</h2>

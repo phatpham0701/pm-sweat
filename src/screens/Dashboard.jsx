@@ -1,15 +1,17 @@
 import React from 'react';
 import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function Dashboard({ onNav }) {
+  const isMobile = useIsMobile();
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "white" }}>
       <AppNav onNav={onNav} active="dashboard" />
-      <main style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
+      <main className="app-main-content" style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "20px 32px", borderBottom: "1px solid var(--hairline)",
+          padding: isMobile ? "16px 20px" : "20px 32px", borderBottom: "1px solid var(--hairline)",
         }}>
           <div>
             <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>Overview · week 19</span>
@@ -25,7 +27,7 @@ export default function Dashboard({ onNav }) {
           </div>
         </div>
 
-        <div style={{ padding: 32, display: "grid", gridTemplateColumns: "1.55fr 1fr", gap: 24 }}>
+        <div style={{ padding: isMobile ? 16 : 32, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.55fr 1fr", gap: isMobile ? 16 : 24 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <HeroSweatCard onNav={onNav} />
             <ActivityCard />
