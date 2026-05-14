@@ -2,9 +2,23 @@ import React from 'react';
 import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useAuthStore } from '../stores/authStore';
+
+const SV_TARGET = 3284;
+const SV_ANIM_FROM = 3100;
+const CHART_POINTS = [12, 18, 24, 22, 28, 32, 30, 36, 42, 38, 46, 52];
+
+function getTimeGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
 
 export default function Dashboard({ onNav }) {
   const isMobile = useIsMobile();
+  const { user } = useAuthStore();
+  const firstName = user?.name?.split(' ')[0] || 'Athlete';
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "white" }}>
       <AppNav onNav={onNav} active="dashboard" />
@@ -15,7 +29,7 @@ export default function Dashboard({ onNav }) {
         }}>
           <div>
             <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>Overview · week 19</span>
-            <h1 className="t-h2" style={{ margin: "4px 0 0" }}>Good evening, Minh.</h1>
+            <h1 className="t-h2" style={{ margin: "4px 0 0" }}>{getTimeGreeting()}, {firstName}.</h1>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <button className="btn btn-sm btn-secondary">
@@ -45,22 +59,21 @@ export default function Dashboard({ onNav }) {
 }
 
 function HeroSweatCard({ onNav, isMobile }) {
-  const [val, setVal] = React.useState(3100);
+  const [val, setVal] = React.useState(SV_ANIM_FROM);
   React.useEffect(() => {
     let raf, start = null;
-    const target = 3284;
     const step = (ts) => {
       if (!start) start = ts;
       const p = Math.min((ts - start) / 1400, 1);
       const eased = 1 - Math.pow(1 - p, 3);
-      setVal(Math.round(3100 + (target - 3100) * eased));
+      setVal(Math.round(SV_ANIM_FROM + (SV_TARGET - SV_ANIM_FROM) * eased));
       if (p < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const points = [12, 18, 24, 22, 28, 32, 30, 36, 42, 38, 46, 52];
+  const points = CHART_POINTS;
   const max = Math.max(...points);
   const w = 280, h = 60;
   const path = points.map((p, i) => `${i === 0 ? "M" : "L"} ${(i / (points.length - 1)) * w} ${h - (p / max) * h}`).join(" ");

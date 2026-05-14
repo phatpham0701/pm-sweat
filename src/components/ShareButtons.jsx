@@ -44,6 +44,7 @@ export function ShareButtons({
           href={social.url}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Share on ${social.name}`}
           title={`Share on ${social.name}`}
           style={{
             display: 'inline-flex',

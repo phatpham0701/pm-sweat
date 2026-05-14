@@ -1,12 +1,20 @@
 import { create } from 'zustand';
 
+function isValidSession(session) {
+  return session && typeof session.userId === 'string' && typeof session.email === 'string';
+}
+
+function isValidUser(user) {
+  return user && typeof user.id === 'string' && typeof user.email === 'string' && typeof user.name === 'string';
+}
+
 function getInitialState() {
   try {
     const session = JSON.parse(localStorage.getItem('pmsweat_session'));
-    if (session) {
+    if (isValidSession(session)) {
       const users = JSON.parse(localStorage.getItem('pmsweat_users')) || {};
       const user = Object.values(users).find(u => u.id === session.userId);
-      if (user) {
+      if (isValidUser(user)) {
         return {
           user: { id: user.id, email: user.email, name: user.name, handle: user.handle, city: user.city },
           isLoggedIn: true,
@@ -87,10 +95,14 @@ export const useAuthStore = create((set, get) => ({
   updateProfile: (data) => {
     const { user } = get();
     if (!user) return;
+    const allowed = ['name', 'handle', 'city'];
+    const sanitized = Object.fromEntries(
+      Object.entries(data).filter(([k]) => allowed.includes(k))
+    );
     const users = JSON.parse(localStorage.getItem('pmsweat_users')) || {};
-    users[user.email] = { ...users[user.email], ...data };
+    users[user.email] = { ...users[user.email], ...sanitized };
     localStorage.setItem('pmsweat_users', JSON.stringify(users));
-    set({ user: { ...user, ...data } });
+    set({ user: { ...user, ...sanitized } });
   },
 
   clearError: () => set({ error: null }),

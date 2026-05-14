@@ -3,10 +3,18 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Icon, LogoMark, Wordmark } from '../components/brand';
+import { useAuthStore } from '../stores/authStore';
 
 export default function Onboarding({ onNav }) {
+  const { user } = useAuthStore();
   const [step, setStep] = React.useState(0);
-  const [profile, setProfile] = React.useState({ name: "Minh Ngọc", handle: "minhsweat", age: "29", primary: "running" });
+  const [profile, setProfile] = React.useState({
+    name: user?.name || "",
+    handle: user?.handle || "",
+    age: "",
+    city: user?.city || "",
+    primary: "running",
+  });
   const [devices, setDevices] = React.useState({ garmin: true, apple: false, strava: true, whoop: false, wahoo: false });
   const [attestStage, setAttestStage] = React.useState(0);
 

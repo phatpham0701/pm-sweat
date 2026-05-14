@@ -4,6 +4,13 @@ import { PublicNav, Footer } from '../components/chrome';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { ShareButtons } from '../components/ShareButtons';
 
+const PROOF_EXAMPLES = [
+  { id: "run",  icon: "Run",      title: "10.4 km · 04:52 /km",  meta: "Garmin · HR 162 · auth ✓", value: "+48 sv" },
+  { id: "swim", icon: "Swim",     title: "2,400 m freestyle",     meta: "Apple Watch · 38 min · auth ✓", value: "+32 sv" },
+  { id: "bike", icon: "Bike",     title: "42.8 km loop",          meta: "Wahoo · 312 W avg · auth ✓", value: "+61 sv" },
+  { id: "lift", icon: "Dumbbell", title: "Push session · 6×5",    meta: "Hevy log · RPE 8 · auth ✓", value: "+24 sv" },
+];
+
 export default function Landing({ onNav }) {
   const isMobile = useIsMobile();
   const [tick, setTick] = React.useState(0);
@@ -12,12 +19,7 @@ export default function Landing({ onNav }) {
     return () => clearInterval(id);
   }, []);
 
-  const proofExamples = [
-    { id: "run", icon: "Run", title: "10.4 km · 04:52 /km", meta: "Garmin · HR 162 · auth ✓", value: "+48 sv" },
-    { id: "swim", icon: "Swim", title: "2,400 m freestyle", meta: "Apple Watch · 38 min · auth ✓", value: "+32 sv" },
-    { id: "bike", icon: "Bike", title: "42.8 km loop", meta: "Wahoo · 312 W avg · auth ✓", value: "+61 sv" },
-    { id: "lift", icon: "Dumbbell", title: "Push session · 6×5", meta: "Hevy log · RPE 8 · auth ✓", value: "+24 sv" },
-  ];
+  const proofExamples = PROOF_EXAMPLES;
 
   return (
     <div>

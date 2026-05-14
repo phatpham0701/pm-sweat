@@ -72,6 +72,8 @@ export function PublicNav({ onDark = false, onNav, route }) {
               style={{ ...linkStyle, color: route === it.id ? (onDark ? "white" : "var(--navy)") : linkStyle.color }}
               onMouseEnter={(e) => e.currentTarget.style.color = onDark ? "white" : "var(--navy)"}
               onMouseLeave={(e) => e.currentTarget.style.color = route === it.id ? (onDark ? "white" : "var(--navy)") : linkStyle.color}
+              onFocus={(e) => e.currentTarget.style.color = onDark ? "white" : "var(--navy)"}
+              onBlur={(e) => e.currentTarget.style.color = route === it.id ? (onDark ? "white" : "var(--navy)") : linkStyle.color}
             >{it.label}</button>
           ))}
         </div>
@@ -190,6 +192,8 @@ export function AppNav({ onNav, active = "dashboard" }) {
             }}
             onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "var(--ink-04)"; }}
             onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
+            onFocus={(e) => { if (!isActive) e.currentTarget.style.background = "var(--ink-04)"; }}
+            onBlur={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
           >
             <IC size={16} color={isActive ? "var(--navy)" : "var(--muted)"} />
             <span>{it.label}</span>
@@ -206,6 +210,8 @@ export function AppNav({ onNav, active = "dashboard" }) {
           }}
           onMouseEnter={(e) => e.currentTarget.style.background = "var(--ink-04)"}
           onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+          onFocus={(e) => e.currentTarget.style.background = "var(--ink-04)"}
+          onBlur={(e) => e.currentTarget.style.background = "transparent"}
         >
           <Icon.Settings size={16} color="var(--muted)" />
           <span>Profile</span>
@@ -218,16 +224,25 @@ export function AppNav({ onNav, active = "dashboard" }) {
           }}
           onMouseEnter={(e) => e.currentTarget.style.background = "var(--ink-04)"}
           onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+          onFocus={(e) => e.currentTarget.style.background = "var(--ink-04)"}
+          onBlur={(e) => e.currentTarget.style.background = "transparent"}
         >
           <Icon.ArrowRight size={16} color="var(--muted)" style={{ transform: "rotate(180deg)" }} />
           <span>Sign out</span>
         </button>
-        <div
+        <button
+          type="button"
           onClick={() => onNav && onNav("profile")}
+          aria-label="Go to profile"
           style={{
             marginTop: 8, padding: 10, border: "1px solid var(--hairline)", borderRadius: 12,
             display: "flex", alignItems: "center", gap: 10, cursor: "pointer",
+            background: "transparent", width: "100%", textAlign: "left", transition: "background 150ms",
           }}
+          onMouseEnter={(e) => e.currentTarget.style.background = "var(--ink-04)"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+          onFocus={(e) => e.currentTarget.style.background = "var(--ink-04)"}
+          onBlur={(e) => e.currentTarget.style.background = "transparent"}
         >
           <div style={{
             width: 32, height: 32, borderRadius: 999,
@@ -241,7 +256,7 @@ export function AppNav({ onNav, active = "dashboard" }) {
             <div style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.1 }}>{user?.name || 'Athlete'}</div>
             <div className="t-mono" style={{ fontSize: 10, color: "var(--muted)", marginTop: 2 }}>@{user?.handle || 'user'}</div>
           </div>
-        </div>
+        </button>
       </div>
     </aside>
   );
