@@ -256,3 +256,13 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 0; }
   border-top: 4px solid rgba(7, 19, 38, 0.95);
 }
 .tier-badge:hover .badge-tooltip { opacity: 1; }
+
+/* Accessibility: respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .tier-badge--glow,
+  .tier-badge:hover {
+    animation: none;
+    -webkit-animation: none;
+  }
+  .tier-badge--glow { box-shadow: 0 0 12px rgba(99, 102, 241, 0.3); }
+}

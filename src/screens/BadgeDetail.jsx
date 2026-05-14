@@ -2,14 +2,7 @@ import React from 'react';
 import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
 import { useIsMobile } from '../hooks/useIsMobile';
-
-const TIER_RARITY = [
-  { percent: 100, label: "All members" },
-  { percent: 62,  label: "62% of users" },
-  { percent: 28,  label: "28% of users" },
-  { percent: 8,   label: "8% of users" },
-  { percent: 2,   label: "Top 2% of users" },
-];
+import { RarityIndicator } from '../components/RarityIndicator';
 
 const TIER_INFO = [
   { name: "Foundation", req: "Verified · 4w" },
@@ -65,7 +58,6 @@ export default function BadgeDetail({ onNav }) {
     { n: 5, name: "Mastery",    cls: "tier-5", req: "24mo · multi-category",      count: "2%" },
   ];
   const tier = tiers.find(t => t.n === selected);
-  const rarity = TIER_RARITY[selected - 1];
   const nextTier = selected < 5 ? tiers[selected] : null;
 
   return (
@@ -190,24 +182,7 @@ export default function BadgeDetail({ onNav }) {
                 )}
 
                 {/* Rarity (Task 5) */}
-                <div style={{ marginTop: 20 }}>
-                  <div className="t-eyebrow">Rarity</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
-                    <div style={{ flex: 1, height: 6, background: "var(--hairline)", borderRadius: 3, overflow: "hidden" }}>
-                      <div style={{
-                        height: "100%",
-                        width: `${rarity.percent}%`,
-                        background: selected === 5 ? "var(--grad-full)" : "var(--indigo)",
-                        borderRadius: 3,
-                        transition: "width 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-                      }} />
-                    </div>
-                    <span style={{ fontSize: 12, color: "var(--muted)", minWidth: 36, textAlign: "right" }}>
-                      {rarity.percent}%
-                    </span>
-                  </div>
-                  <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 4 }}>{rarity.label}</div>
-                </div>
+                <RarityIndicator tierNum={selected} />
 
               </div>
             </div>

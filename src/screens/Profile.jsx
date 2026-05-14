@@ -25,6 +25,7 @@ export function Profile() {
     defaultValues: {
       name: user?.name || '',
       handle: user?.handle || '',
+      city: user?.city || '',
     },
   });
 
@@ -83,6 +84,10 @@ export function Profile() {
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>Handle</label>
               <input {...register('handle')} style={field} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>City</label>
+              <input {...register('city')} style={field} />
             </div>
             <button type="submit" className="btn btn-primary" style={{ alignSelf: 'flex-start', marginTop: 4 }}>
               Save changes

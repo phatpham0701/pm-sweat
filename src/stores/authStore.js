@@ -8,7 +8,7 @@ function getInitialState() {
       const user = Object.values(users).find(u => u.id === session.userId);
       if (user) {
         return {
-          user: { id: user.id, email: user.email, name: user.name, handle: user.handle },
+          user: { id: user.id, email: user.email, name: user.name, handle: user.handle, city: user.city },
           isLoggedIn: true,
         };
       }
@@ -46,7 +46,7 @@ export const useAuthStore = create((set, get) => ({
         token: btoa(user.id + ':' + Date.now()),
       }));
       set({
-        user: { id: user.id, email: user.email, name: user.name, handle: user.handle },
+        user: { id: user.id, email: user.email, name: user.name, handle: user.handle, city: user.city },
         isLoggedIn: true,
         isLoading: false,
       });
@@ -68,7 +68,7 @@ export const useAuthStore = create((set, get) => ({
         token: btoa(user.id + ':' + Date.now()),
       }));
       set({
-        user: { id: user.id, email: user.email, name: user.name, handle: user.handle },
+        user: { id: user.id, email: user.email, name: user.name, handle: user.handle, city: user.city },
         isLoggedIn: true,
         isLoading: false,
       });
