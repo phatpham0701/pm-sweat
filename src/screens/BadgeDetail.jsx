@@ -3,17 +3,70 @@ import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
 import { useIsMobile } from '../hooks/useIsMobile';
 
+const TIER_RARITY = [
+  { percent: 100, label: "All members" },
+  { percent: 62,  label: "62% of users" },
+  { percent: 28,  label: "28% of users" },
+  { percent: 8,   label: "8% of users" },
+  { percent: 2,   label: "Top 2% of users" },
+];
+
+const TIER_INFO = [
+  { name: "Foundation", req: "Verified · 4w" },
+  { name: "Proof",      req: "12w attested" },
+  { name: "Signal",     req: "6mo · 2+ disciplines" },
+  { name: "Momentum",   req: "12mo · streak" },
+  { name: "Mastery",    req: "24mo · multi" },
+];
+
+function getTierIcon(tierNum, size) {
+  const c = tierNum === 1 ? "var(--navy)" : "white";
+  if (tierNum === 1) return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M5 13l4 4L19 7" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+  if (tierNum === 2) return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" stroke={c} strokeWidth="2"/>
+      <path d="M8 12l2.5 2.5L16 9" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+  if (tierNum === 3) return (
+    <svg width={size} height={size} viewBox="0 0 24 24">
+      <rect x="3"  y="15" width="4" height="7" rx="1" fill={c}/>
+      <rect x="10" y="9"  width="4" height="13" rx="1" fill={c}/>
+      <rect x="17" y="3"  width="4" height="19" rx="1" fill={c}/>
+    </svg>
+  );
+  if (tierNum === 4) return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M8 21h8M12 17v4M5 6h14l-1.5 8a2 2 0 01-2 1.5h-7a2 2 0 01-2-1.5L5 6z"
+        stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 6H3m16 0h2" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  );
+  if (tierNum === 5) return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={c}>
+      <path d="M5 16L2 6l5 4 5-8 5 8 5-4-3 10H5z"/>
+    </svg>
+  );
+  return null;
+}
+
 export default function BadgeDetail({ onNav }) {
   const isMobile = useIsMobile();
   const [selected, setSelected] = React.useState(3);
   const tiers = [
     { n: 1, name: "Foundation", cls: "tier-1", req: "Verified · consistent 4w", count: "All members" },
-    { n: 2, name: "Proof", cls: "tier-2", req: "12w attested effort", count: "62%" },
-    { n: 3, name: "Signal", cls: "tier-3", req: "6mo · 2+ disciplines", count: "28%" },
-    { n: 4, name: "Momentum", cls: "tier-4", req: "12mo · streak intact", count: "8%" },
-    { n: 5, name: "Mastery", cls: "tier-5", req: "24mo · multi-category", count: "2%" },
+    { n: 2, name: "Proof",      cls: "tier-2", req: "12w attested effort",        count: "62%" },
+    { n: 3, name: "Signal",     cls: "tier-3", req: "6mo · 2+ disciplines",       count: "28%" },
+    { n: 4, name: "Momentum",   cls: "tier-4", req: "12mo · streak intact",       count: "8%" },
+    { n: 5, name: "Mastery",    cls: "tier-5", req: "24mo · multi-category",      count: "2%" },
   ];
   const tier = tiers.find(t => t.n === selected);
+  const rarity = TIER_RARITY[selected - 1];
+  const nextTier = selected < 5 ? tiers[selected] : null;
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "white" }}>
@@ -25,18 +78,22 @@ export default function BadgeDetail({ onNav }) {
             <button className="btn btn-sm btn-ghost" onClick={() => onNav("dashboard")}>
               ← Overview
             </button>
-            <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>/ badges / tier {String(selected).padStart(2,"0")}</span>
+            <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>
+              / badges / tier {String(selected).padStart(2, "0")}
+            </span>
           </div>
           <button className="btn btn-sm btn-secondary">
             <Icon.ArrowUpRight size={14} /> Share verified passport
           </button>
         </div>
 
-        <div style={{ padding: isMobile ? 16 : 32, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: isMobile ? 16 : 32 }}>
+        <div style={{ padding: isMobile ? 16 : 32, display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: isMobile ? 16 : 32 }}>
+
+          {/* LEFT: Tier ladder */}
           <div>
             <span className="t-eyebrow">Badge ladder</span>
             <h2 className="t-h2" style={{ margin: "4px 0 24px" }}>Five tiers, earned in sequence.</h2>
-
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {tiers.map(t => (
                 <button key={t.n} onClick={() => setSelected(t.n)}
@@ -50,7 +107,9 @@ export default function BadgeDetail({ onNav }) {
                   }}>
                   <TierBadge cls={t.cls} size={48} held={t.n <= 3} />
                   <div>
-                    <div className="t-mono" style={{ fontSize: 10, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>Tier {String(t.n).padStart(2,"0")}</div>
+                    <div className="t-mono" style={{ fontSize: 10, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                      Tier {String(t.n).padStart(2, "0")}
+                    </div>
                     <div style={{ fontSize: 15, fontWeight: 500, marginTop: 2 }}>{t.name}</div>
                     <div className="t-small" style={{ marginTop: 2 }}>{t.req}</div>
                   </div>
@@ -66,34 +125,94 @@ export default function BadgeDetail({ onNav }) {
             </div>
           </div>
 
+          {/* RIGHT: Detail */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+            {/* Hero card */}
             <div style={{
               padding: 40, borderRadius: 16, position: "relative", overflow: "hidden",
-              background: selected === 1 ? "white" : selected === 2 ? "#eef0ff" : selected === 3 ? "#e6f6fe" : selected === 4 ? "#e6f7f1" : "white",
+              background: selected === 1 ? "white" : selected === 2 ? "#eef0ff" :
+                          selected === 3 ? "#e6f6fe" : selected === 4 ? "#e6f7f1" : "white",
               border: "1px solid var(--hairline)",
             }}>
               {selected === 5 && (
                 <div style={{ position: "absolute", inset: 0,
                   background: "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(14,165,233,0.18) 50%, rgba(16,185,129,0.18) 100%)" }} />
               )}
-              <div style={{ position: "relative", display: "flex", gap: 32, alignItems: "center" }}>
-                <TierBadge cls={tier.cls} size={120} held={selected <= 3} animate={selected === 3} />
-                <div>
-                  <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.16em", textTransform: "uppercase" }}>
-                    Tier {String(selected).padStart(2,"0")} · {tier.name.toLowerCase()}
-                  </span>
-                  <h2 className="t-h1" style={{ margin: "8px 0 0" }}>{tier.name}</h2>
-                  <p style={{ color: "var(--muted)", marginTop: 10, maxWidth: 380 }}>
-                    {selected === 1 && "Your foundation. Activated when you verify your first device and complete two weeks of attested sessions."}
-                    {selected === 2 && "Twelve consecutive weeks of attested effort. The point at which brands begin to trust the signal."}
-                    {selected === 3 && "Six months across at least two disciplines. Sweat Value compounds and your match rate triples."}
-                    {selected === 4 && "Twelve months, streak intact, top quartile of your cohort. Auto-claim opens for premium rewards."}
-                    {selected === 5 && "Two years of verified effort across categories. Reserved for athletes whose record is undeniable."}
-                  </p>
+              <div style={{ position: "relative" }}>
+
+                {/* Badge + text row */}
+                <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+                  <TierBadge cls={tier.cls} size={120} held={selected <= 3} animate={selected === 3} />
+                  <div style={{ flex: 1 }}>
+                    <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                      Tier {String(selected).padStart(2, "0")} · {tier.name.toLowerCase()}
+                    </span>
+                    <h2 className="t-h1" style={{ margin: "8px 0 0" }}>{tier.name}</h2>
+                    <p style={{ color: "var(--muted)", marginTop: 10, maxWidth: 380 }}>
+                      {selected === 1 && "Your foundation. Activated when you verify your first device and complete two weeks of attested sessions."}
+                      {selected === 2 && "Twelve consecutive weeks of attested effort. The point at which brands begin to trust the signal."}
+                      {selected === 3 && "Six months across at least two disciplines. Sweat Value compounds and your match rate triples."}
+                      {selected === 4 && "Twelve months, streak intact, top quartile of your cohort. Auto-claim opens for premium rewards."}
+                      {selected === 5 && "Two years of verified effort across categories. Reserved for athletes whose record is undeniable."}
+                    </p>
+                  </div>
                 </div>
+
+                {/* Progress to next tier (Task 3) */}
+                {selected < 5 && (
+                  <div style={{ marginTop: 24 }}>
+                    <div className="t-eyebrow">Progress to next tier</div>
+                    <div className="tier-progress">
+                      <div className="tier-progress-fill" style={{ width: `${(selected / 5) * 100}%` }} />
+                    </div>
+                    <div className="tier-stats">
+                      <span>{tier.req}</span>
+                      <span>{nextTier?.name}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Mastery banner (Task 3) */}
+                {selected === 5 && (
+                  <div style={{
+                    marginTop: 20, padding: "12px 16px",
+                    background: "rgba(255,255,255,0.2)",
+                    backdropFilter: "blur(8px)",
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.35)",
+                  }}>
+                    <div className="t-eyebrow">MASTERY UNLOCKED</div>
+                    <p style={{ margin: "6px 0 0", fontSize: 13, color: "var(--muted)" }}>
+                      You've achieved the highest tier. Your record is undeniable.
+                    </p>
+                  </div>
+                )}
+
+                {/* Rarity (Task 5) */}
+                <div style={{ marginTop: 20 }}>
+                  <div className="t-eyebrow">Rarity</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
+                    <div style={{ flex: 1, height: 6, background: "var(--hairline)", borderRadius: 3, overflow: "hidden" }}>
+                      <div style={{
+                        height: "100%",
+                        width: `${rarity.percent}%`,
+                        background: selected === 5 ? "var(--grad-full)" : "var(--indigo)",
+                        borderRadius: 3,
+                        transition: "width 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+                      }} />
+                    </div>
+                    <span style={{ fontSize: 12, color: "var(--muted)", minWidth: 36, textAlign: "right" }}>
+                      {rarity.percent}%
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 4 }}>{rarity.label}</div>
+                </div>
+
               </div>
             </div>
 
+            {/* Requirements card */}
             <div className="card" style={{ padding: 0 }}>
               <div style={{ padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span className="t-eyebrow">Requirements</span>
@@ -125,16 +244,22 @@ export default function BadgeDetail({ onNav }) {
               </div>
             </div>
 
+            {/* Unlocks card */}
             <div className="card" style={{ padding: 0 }}>
               <div style={{ padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span className="t-eyebrow">Unlocks at this tier</span>
                 <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>3 perks</span>
               </div>
-              <div style={{ borderTop: "1px solid var(--hairline)", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr" }}>
+              <div style={{ borderTop: "1px solid var(--hairline)", display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr" }}>
                 {unlocksFor(selected).map((u, i) => {
                   const IC = Icon[u.icon];
                   return (
-                    <div key={i} style={{ padding: 20, borderRight: !isMobile && i < 2 ? "1px solid var(--hairline)" : "none", borderTop: isMobile && i > 0 ? "1px solid var(--hairline)" : "none" }}>
+                    <div key={i} style={{
+                      padding: 20,
+                      borderRight: !isMobile && i < 2 ? "1px solid var(--hairline)" : "none",
+                      borderTop: isMobile && i > 0 ? "1px solid var(--hairline)" : "none",
+                    }}>
                       <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--ink-04)",
                         display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
                         <IC size={16} color="var(--navy)" />
@@ -147,10 +272,13 @@ export default function BadgeDetail({ onNav }) {
               </div>
             </div>
 
+            {/* Public proof */}
             <div className="card" style={{ padding: 24, display: "flex", justifyContent: "space-between",
               alignItems: "center", background: "var(--ink-04)", borderColor: "var(--hairline)" }}>
               <div>
-                <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.16em", textTransform: "uppercase" }}>Public proof url</span>
+                <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                  Public proof url
+                </span>
                 <div className="t-mono" style={{ fontSize: 13, marginTop: 4 }}>pmsweat.com/minhsweat/tier-3</div>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
@@ -158,6 +286,7 @@ export default function BadgeDetail({ onNav }) {
                 <button className="btn btn-sm btn-primary">Copy link</button>
               </div>
             </div>
+
           </div>
         </div>
       </main>
@@ -166,30 +295,55 @@ export default function BadgeDetail({ onNav }) {
 }
 
 function TierBadge({ cls, size = 64, held = false, animate = false }) {
+  const tierNum = parseInt(cls.replace("tier-", ""));
   const bg = cls === "tier-1" ? "transparent" :
              cls === "tier-2" ? "var(--indigo)" :
              cls === "tier-3" ? "var(--signal)" :
              cls === "tier-4" ? "var(--mint)" :
              "var(--grad-full)";
   const border = cls === "tier-1" ? "2px solid var(--navy)" : "none";
-  const color = cls === "tier-1" ? "var(--navy)" : "white";
+
+  const glowColor = cls === "tier-3" ? "rgba(14,165,233,0.4)" :
+                    cls === "tier-4" ? "rgba(16,185,129,0.4)" :
+                    cls === "tier-5" ? "rgba(99,102,241,0.5)" : null;
+
+  const iconSize = Math.round(size * 0.42);
+  const icon = getTierIcon(tierNum, iconSize);
+  const info = TIER_INFO[tierNum - 1];
+
   return (
-    <div style={{
-      width: size, height: size, borderRadius: size / 5,
-      background: bg, border, display: "flex", alignItems: "center", justifyContent: "center",
-      flexShrink: 0, position: "relative",
-      boxShadow: cls === "tier-5" ? "0 12px 32px rgba(99,102,241,0.18)" : "none",
-    }}>
-      <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none">
-        <path d="M5 12.5l4.5 4.5L19 7.5" stroke={color} strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"
-          className={animate ? "check-draw" : ""} />
-      </svg>
+    <div
+      className={`tier-badge${cls === "tier-5" ? " tier-badge--glow" : ""}`}
+      style={{
+        width: size, height: size,
+        borderRadius: size / 5,
+        background: bg, border,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0, position: "relative",
+        transition: "box-shadow 0.3s ease",
+        boxShadow: glowColor ? `0 0 12px ${glowColor}` : "none",
+      }}
+    >
+      {/* Tier-specific icon (Task 2) */}
+      <div className={animate ? "fade-up" : ""}>{icon}</div>
+
+      {/* Lock overlay for unearned tiers */}
       {!held && cls !== "tier-1" && (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.7)", borderRadius: "inherit",
-          display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "rgba(255,255,255,0.7)",
+          borderRadius: "inherit",
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
           <Icon.Lock size={size * 0.3} color="var(--muted)" />
         </div>
       )}
+
+      {/* Hover tooltip (Task 4) */}
+      <div className="badge-tooltip">
+        <strong>{info.name}</strong>
+        <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>{info.req}</div>
+      </div>
     </div>
   );
 }

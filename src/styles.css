@@ -208,3 +208,51 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 0; }
   }
   .app-main-content { padding-bottom: 56px; }
 }
+
+/* ─── Phase 4: Badge Enhancements ────────────────────────────── */
+@keyframes badgeGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(99, 102, 241, 0.3); }
+  50%       { box-shadow: 0 0 20px rgba(99, 102, 241, 0.6); }
+}
+@keyframes pulseBadge {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.tier-badge { position: relative; cursor: default; }
+.tier-badge:hover { animation: pulseBadge 0.5s ease-in-out; }
+.tier-badge--glow { animation: badgeGlow 2.5s ease-in-out infinite; }
+
+.tier-progress {
+  width: 100%; height: 4px; background: var(--hairline);
+  border-radius: 2px; margin-top: 8px; overflow: hidden;
+}
+.tier-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--indigo), var(--signal));
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tier-stats {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--muted); margin-top: 6px;
+}
+
+.badge-tooltip {
+  position: absolute; bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%);
+  background: rgba(7, 19, 38, 0.95); color: white;
+  padding: 7px 11px; border-radius: 7px;
+  font-size: 12px; white-space: nowrap;
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.18s ease; z-index: 20;
+}
+.badge-tooltip::after {
+  content: ""; position: absolute; bottom: -4px; left: 50%;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent; border-right: 4px solid transparent;
+  border-top: 4px solid rgba(7, 19, 38, 0.95);
+}
+.tier-badge:hover .badge-tooltip { opacity: 1; }
