@@ -1,8 +1,10 @@
 import React from 'react';
 import { Icon } from '../components/brand';
 import { PublicNav, Footer } from '../components/chrome';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function Landing({ onNav }) {
+  const isMobile = useIsMobile();
   const [tick, setTick] = React.useState(0);
   React.useEffect(() => {
     const id = setInterval(() => setTick(t => (t + 1) % 4), 2200);
@@ -27,7 +29,7 @@ export default function Landing({ onNav }) {
         <div className="container" style={{ position: "relative", zIndex: 1 }}>
           <PublicNav onDark={true} onNav={onNav} route="landing" />
 
-          <div style={{ padding: "80px 0 96px", display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 64, alignItems: "end" }}>
+          <div style={{ padding: isMobile ? "40px 0 48px" : "80px 0 96px", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.35fr 1fr", gap: isMobile ? 32 : 64, alignItems: "end" }}>
             <div>
               <div className="eyebrow-row on-dark" style={{ marginBottom: 28 }}>
                 <span className="t-mono" style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)" }}>
@@ -107,8 +109,8 @@ export default function Landing({ onNav }) {
           <span className="line" />
         </div>
 
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 80, alignItems: "start" }}>
-          <div style={{ position: "sticky", top: 80 }}>
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.4fr", gap: isMobile ? 32 : 80, alignItems: "start" }}>
+          <div style={{ position: isMobile ? "static" : "sticky", top: 80 }}>
             <h2 className="t-h1" style={{ margin: 0 }}>
               Effort is the signal. <span style={{ color: "var(--muted)" }}>We just verify it.</span>
             </h2>
@@ -135,7 +137,7 @@ export default function Landing({ onNav }) {
           <span className="line" />
         </div>
 
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 56, alignItems: "center" }}>
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.1fr 1fr", gap: isMobile ? 32 : 56, alignItems: "center" }}>
           <SweatValueDemo />
           <div>
             <h2 className="t-h1" style={{ margin: 0, maxWidth: 480 }}>
@@ -170,7 +172,7 @@ export default function Landing({ onNav }) {
           <span className="lbl">Five tier badge system</span>
           <span className="line" />
         </div>
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, alignItems: "end" }}>
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 24 : 56, alignItems: "end" }}>
           <h2 className="t-h1" style={{ margin: 0, maxWidth: 480 }}>
             Earned, not bought. Recognized, not rented.
           </h2>
@@ -191,7 +193,7 @@ export default function Landing({ onNav }) {
             <span className="lbl">Verification, inspectable</span>
             <span className="line" />
           </div>
-          <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: 64, alignItems: "center" }}>
+          <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.1fr", gap: isMobile ? 32 : 64, alignItems: "center" }}>
             <div>
               <h2 className="t-h1" style={{ margin: 0 }}>
                 You can see the proof. <span style={{ color: "var(--muted)" }}>Brands can verify it. No one reads your data.</span>
@@ -227,7 +229,7 @@ export default function Landing({ onNav }) {
           <span className="lbl">For brand partners</span>
           <span className="line" />
         </div>
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, alignItems: "start" }}>
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 24 : 56, alignItems: "start" }}>
           <h2 className="t-h1" style={{ margin: 0, maxWidth: 520 }}>
             Reach athletes whose effort is on the record.
           </h2>
@@ -241,7 +243,7 @@ export default function Landing({ onNav }) {
           </div>
         </div>
 
-        <div style={{ marginTop: 56, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+        <div style={{ marginTop: 56, display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: isMobile ? 12 : 16 }}>
           {[
             { k: "Match precision", v: "94%", m: "Verified profile vs. campaign brief" },
             { k: "Engagement uplift", v: "3.4×", m: "vs. generic athlete ads" },
@@ -260,11 +262,12 @@ export default function Landing({ onNav }) {
       {/* ─── FINAL CTA ──────────────────────────────────────── */}
       <section className="container" style={{ padding: "80px 0 0" }}>
         <div style={{
-          background: "var(--navy)", color: "white", borderRadius: 20, padding: "72px 64px",
+          background: "var(--navy)", color: "white", borderRadius: 20,
+          padding: isMobile ? "48px 28px" : "72px 64px",
           position: "relative", overflow: "hidden",
         }}>
           <div className="halo" style={{ inset: "auto -10% -40% auto", width: "60%", height: "100%" }} />
-          <div style={{ position: "relative", display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 56, alignItems: "center" }}>
+          <div style={{ position: "relative", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: isMobile ? 32 : 56, alignItems: "center" }}>
             <div>
               <div className="t-mono" style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase",
                 color: "rgba(255,255,255,0.55)" }}>Free · open beta · sea region</div>
@@ -420,6 +423,7 @@ function SweatValueDemo() {
 }
 
 function BadgeLadder({ onNav }) {
+  const isMobile = useIsMobile();
   const tiers = [
     { n: "01", name: "Foundation", desc: "Verified, consistent for 4+ weeks", count: "All members", cls: "tier-1" },
     { n: "02", name: "Proof", desc: "Locked in 12 weeks of attested effort", count: "62%", cls: "tier-2" },
@@ -428,7 +432,7 @@ function BadgeLadder({ onNav }) {
     { n: "05", name: "Mastery", desc: "24 months · verified across categories", count: "2%", cls: "tier-5" },
   ];
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(5, 1fr)", gap: isMobile ? 10 : 12 }}>
       {tiers.map((t) => (
         <button key={t.n} onClick={() => onNav("badge")}
           style={{
@@ -462,6 +466,7 @@ function BadgeLadder({ onNav }) {
 }
 
 function VerificationDemo() {
+  const isMobile = useIsMobile();
   const [stage, setStage] = React.useState(0);
   React.useEffect(() => {
     const id = setInterval(() => setStage(s => (s + 1) % 4), 1800);
@@ -478,7 +483,7 @@ function VerificationDemo() {
         <span className="tier tier-1">Verified</span>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 0, marginBottom: 32 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: isMobile ? 8 : 0, marginBottom: 32 }}>
         {stages.map((s, i) => (
           <div key={s} style={{ position: "relative", textAlign: "left" }}>
             <div style={{

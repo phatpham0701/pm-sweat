@@ -1,15 +1,17 @@
 import React from 'react';
 import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function Dashboard({ onNav }) {
+  const isMobile = useIsMobile();
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "white" }}>
       <AppNav onNav={onNav} active="dashboard" />
-      <main style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
+      <main className="app-main-content" style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "20px 32px", borderBottom: "1px solid var(--hairline)",
+          padding: isMobile ? "16px 20px" : "20px 32px", borderBottom: "1px solid var(--hairline)",
         }}>
           <div>
             <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>Overview · week 19</span>
@@ -25,11 +27,11 @@ export default function Dashboard({ onNav }) {
           </div>
         </div>
 
-        <div style={{ padding: 32, display: "grid", gridTemplateColumns: "1.55fr 1fr", gap: 24 }}>
+        <div style={{ padding: isMobile ? 16 : 32, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.55fr 1fr", gap: isMobile ? 16 : 24 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <HeroSweatCard onNav={onNav} />
-            <ActivityCard />
-            <MatchesCard onNav={onNav} />
+            <HeroSweatCard onNav={onNav} isMobile={isMobile} />
+            <ActivityCard isMobile={isMobile} />
+            <MatchesCard onNav={onNav} isMobile={isMobile} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <BadgeProgressCard onNav={onNav} />
@@ -42,7 +44,7 @@ export default function Dashboard({ onNav }) {
   );
 }
 
-function HeroSweatCard({ onNav }) {
+function HeroSweatCard({ onNav, isMobile }) {
   const [val, setVal] = React.useState(3100);
   React.useEffect(() => {
     let raf, start = null;
@@ -70,7 +72,7 @@ function HeroSweatCard({ onNav }) {
         <div>
           <span className="t-eyebrow">Sweat value · current</span>
           <div className="sv-num" style={{ marginTop: 12 }}>{val.toLocaleString()}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 14 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 14 }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "var(--mint)" }}>
               <Icon.ArrowUp size={14} color="var(--mint)" />
               <span className="t-mono" style={{ fontSize: 13 }}>+184 / week</span>
@@ -81,22 +83,24 @@ function HeroSweatCard({ onNav }) {
             <span className="tier tier-3">Tier 3 · signal</span>
           </div>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <div className="t-eyebrow" style={{ marginBottom: 8 }}>Trailing 12 weeks</div>
-          <svg width={w} height={h + 4} style={{ overflow: "visible" }}>
-            <defs>
-              <linearGradient id="spark-grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path d={area} fill="url(#spark-grad)" />
-            <path d={path} fill="none" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            {points.map((p, i) => i === points.length - 1 && (
-              <circle key={i} cx={(i / (points.length - 1)) * w} cy={h - (p / max) * h} r="3" fill="#10B981" />
-            ))}
-          </svg>
-        </div>
+        {!isMobile && (
+          <div style={{ textAlign: "right", flexShrink: 0 }}>
+            <div className="t-eyebrow" style={{ marginBottom: 8 }}>Trailing 12 weeks</div>
+            <svg width={w} height={h + 4} style={{ overflow: "visible" }}>
+              <defs>
+                <linearGradient id="spark-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path d={area} fill="url(#spark-grad)" />
+              <path d={path} fill="none" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              {points.map((p, i) => i === points.length - 1 && (
+                <circle key={i} cx={(i / (points.length - 1)) * w} cy={h - (p / max) * h} r="3" fill="#10B981" />
+              ))}
+            </svg>
+          </div>
+        )}
       </div>
 
       <div style={{ marginTop: 28, paddingTop: 24, borderTop: "1px solid var(--hairline)" }}>
@@ -117,7 +121,7 @@ function HeroSweatCard({ onNav }) {
   );
 }
 
-function ActivityCard() {
+function ActivityCard({ isMobile }) {
   const sessions = [
     { day: "Today", icon: "Run", title: "Tempo run · 10.4 km", meta: "04:52 /km · zone 3 · garmin", sv: "+48" },
     { day: "Yesterday", icon: "Dumbbell", title: "Push day · 6×5", meta: "RPE 8 · hevy log", sv: "+24" },
@@ -134,52 +138,78 @@ function ActivityCard() {
         </div>
         <button className="btn btn-sm btn-ghost">All activity <Icon.ArrowRight size={12} /></button>
       </div>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}>
-            {["When", "Session", "Detail", "Sv", ""].map(h => (
-              <th key={h} style={{ textAlign: "left", padding: "10px 24px",
-                fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--muted)",
-                letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 400 }}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
+      {isMobile ? (
+        <div style={{ display: "flex", flexDirection: "column" }}>
           {sessions.map((s, i) => {
             const IC = Icon[s.icon];
             return (
-              <tr key={i} style={{ borderBottom: i < sessions.length - 1 ? "1px solid var(--hairline)" : "none" }}>
-                <td style={{ padding: "14px 24px" }}>
-                  <span className="t-mono" style={{ fontSize: 12, color: "var(--muted)" }}>{s.day}</span>
-                </td>
-                <td style={{ padding: "14px 24px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--ink-04)",
-                      display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <IC size={16} color="var(--navy)" />
-                    </div>
-                    <span style={{ fontSize: 14, fontWeight: 500 }}>{s.title}</span>
-                  </div>
-                </td>
-                <td style={{ padding: "14px 24px" }}>
-                  <span className="t-mono" style={{ fontSize: 12, color: "var(--muted)" }}>{s.meta}</span>
-                </td>
-                <td style={{ padding: "14px 24px" }}>
-                  <span className="t-mono" style={{ fontSize: 13, color: "var(--mint)" }}>{s.sv}</span>
-                </td>
-                <td style={{ padding: "14px 24px" }}>
-                  <Icon.CheckCircle size={16} color="var(--mint)" />
-                </td>
-              </tr>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12,
+                padding: "14px 20px", borderTop: "1px solid var(--hairline)" }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: "var(--ink-04)",
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <IC size={16} color="var(--navy)" />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 500 }}>{s.title}</div>
+                  <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{s.day}</div>
+                </div>
+                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                  <div className="t-mono" style={{ fontSize: 13, color: "var(--mint)" }}>{s.sv}</div>
+                  <Icon.CheckCircle size={14} color="var(--mint)" />
+                </div>
+              </div>
             );
           })}
-        </tbody>
-      </table>
+        </div>
+      ) : (
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}>
+              {[["When","When"], ["Session","Session"], ["Detail","Detail"], ["Sv","Sweat Value"], ["","Verified"]].map(([label, srLabel]) => (
+                <th key={srLabel} scope="col" style={{ textAlign: "left", padding: "10px 24px",
+                  fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--muted)",
+                  letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 400 }}>
+                  {label || <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>{srLabel}</span>}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sessions.map((s, i) => {
+              const IC = Icon[s.icon];
+              return (
+                <tr key={i} style={{ borderBottom: i < sessions.length - 1 ? "1px solid var(--hairline)" : "none" }}>
+                  <td style={{ padding: "14px 24px" }}>
+                    <span className="t-mono" style={{ fontSize: 12, color: "var(--muted)" }}>{s.day}</span>
+                  </td>
+                  <td style={{ padding: "14px 24px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--ink-04)",
+                        display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <IC size={16} color="var(--navy)" />
+                      </div>
+                      <span style={{ fontSize: 14, fontWeight: 500 }}>{s.title}</span>
+                    </div>
+                  </td>
+                  <td style={{ padding: "14px 24px" }}>
+                    <span className="t-mono" style={{ fontSize: 12, color: "var(--muted)" }}>{s.meta}</span>
+                  </td>
+                  <td style={{ padding: "14px 24px" }}>
+                    <span className="t-mono" style={{ fontSize: 13, color: "var(--mint)" }}>{s.sv}</span>
+                  </td>
+                  <td style={{ padding: "14px 24px" }}>
+                    <Icon.CheckCircle size={16} color="var(--mint)" />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
 
-function MatchesCard({ onNav }) {
+function MatchesCard({ onNav, isMobile }) {
   const matches = [
     { brand: "Salt & Lime Recovery", tag: "Recovery clinic · district 2", offer: "30% off cryotherapy block", expires: "expires in 3d", grad: "var(--grad-proof)" },
     { brand: "Origin Supps", tag: "Premium nutrition · vn", offer: "Free 1lb whey on $80+ order", expires: "expires in 6d", grad: "var(--grad-momentum)" },
@@ -195,7 +225,24 @@ function MatchesCard({ onNav }) {
         <button className="btn btn-sm btn-ghost">All matches <Icon.ArrowRight size={12} /></button>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        {matches.map((m, i) => (
+        {matches.map((m, i) => isMobile ? (
+          <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start",
+            padding: "16px 20px", borderTop: "1px solid var(--hairline)" }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: m.grad,
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Icon.Spark size={18} color="white" />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 500, fontSize: 14 }}>{m.brand}</div>
+              <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{m.tag}</div>
+              <div style={{ fontSize: 13, marginTop: 6 }}>{m.offer}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
+                <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>{m.expires}</div>
+                <button className="btn btn-sm btn-primary">Claim <Icon.ArrowRight size={12} /></button>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div key={i} style={{
             display: "grid", gridTemplateColumns: "44px 1.4fr 1.6fr auto", gap: 16, alignItems: "center",
             padding: "20px 24px", borderTop: "1px solid var(--hairline)",

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Wordmark, Icon } from './brand';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export function PublicNav({ onDark = false, onNav, route }) {
+  const isMobile = useIsMobile();
   const linkStyle = {
     fontSize: 14,
     color: onDark ? "rgba(255,255,255,0.7)" : "var(--ink-60)",
@@ -14,26 +16,30 @@ export function PublicNav({ onDark = false, onNav, route }) {
     { id: "dashboard", label: "Dashboard" },
   ];
   return (
-    <nav style={{
+    <nav aria-label="Main navigation" style={{
       display: "flex", alignItems: "center", justifyContent: "space-between",
       padding: "20px 0",
     }}>
       <button onClick={() => onNav("landing")} style={{ display: "flex", alignItems: "center" }}>
         <Wordmark on={onDark ? "dark" : "light"} size={15} />
       </button>
-      <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
-        {items.map(it => (
-          <button key={it.id} onClick={() => onNav(it.id)}
-            style={{ ...linkStyle, color: route === it.id ? (onDark ? "white" : "var(--navy)") : linkStyle.color }}
-            onMouseEnter={(e) => e.currentTarget.style.color = onDark ? "white" : "var(--navy)"}
-            onMouseLeave={(e) => e.currentTarget.style.color = route === it.id ? (onDark ? "white" : "var(--navy)") : linkStyle.color}
-          >{it.label}</button>
-        ))}
-      </div>
+      {!isMobile && (
+        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+          {items.map(it => (
+            <button key={it.id} onClick={() => onNav(it.id)}
+              style={{ ...linkStyle, color: route === it.id ? (onDark ? "white" : "var(--navy)") : linkStyle.color }}
+              onMouseEnter={(e) => e.currentTarget.style.color = onDark ? "white" : "var(--navy)"}
+              onMouseLeave={(e) => e.currentTarget.style.color = route === it.id ? (onDark ? "white" : "var(--navy)") : linkStyle.color}
+            >{it.label}</button>
+          ))}
+        </div>
+      )}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <button className={`btn btn-sm ${onDark ? "btn-onDark-ghost" : "btn-ghost"}`}>Sign in</button>
+        {!isMobile && (
+          <button className={`btn btn-sm ${onDark ? "btn-onDark-ghost" : "btn-ghost"}`}>Sign in</button>
+        )}
         <button onClick={() => onNav("onboarding")} className={`btn btn-sm ${onDark ? "btn-onDark" : "btn-primary"}`}>
-          Get verified <Icon.ArrowRight size={14} />
+          {isMobile ? "Join" : "Get verified"} <Icon.ArrowRight size={14} />
         </button>
       </div>
     </nav>
@@ -41,6 +47,7 @@ export function PublicNav({ onDark = false, onNav, route }) {
 }
 
 export function Footer() {
+  const isMobile = useIsMobile();
   const cols = [
     { h: "Product", links: ["How it works", "Verification", "Sweat Value", "Badges", "Rewards"] },
     { h: "For partners", links: ["Why PM Sweat", "Targeting", "Pricing", "API", "Case studies"] },
@@ -49,8 +56,8 @@ export function Footer() {
   ];
   return (
     <footer style={{ borderTop: "1px solid var(--hairline)", padding: "64px 0 48px", marginTop: 80 }}>
-      <div className="container" style={{ display: "grid", gridTemplateColumns: "1.6fr repeat(4, 1fr)", gap: 48 }}>
-        <div>
+      <div className="container" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "1.6fr repeat(4, 1fr)", gap: isMobile ? 32 : 48 }}>
+        <div style={isMobile ? { gridColumn: "1 / -1" } : undefined}>
           <Wordmark size={15} />
           <p className="t-small" style={{ marginTop: 16, maxWidth: 280 }}>
             Verified sport effort, perfectly matched to fair compensation. Built for athletes who show up.
@@ -71,8 +78,10 @@ export function Footer() {
           </div>
         ))}
       </div>
-      <div className="container" style={{ marginTop: 56, display: "flex", justifyContent: "space-between",
-          alignItems: "center", paddingTop: 24, borderTop: "1px solid var(--hairline)" }}>
+      <div className="container" style={{ marginTop: 56, display: "flex",
+          flexDirection: isMobile ? "column" : "row", gap: isMobile ? 8 : 0,
+          justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center",
+          paddingTop: 24, borderTop: "1px solid var(--hairline)" }}>
         <span className="t-small">© 2026 PM Sweat Labs · Perfect Match Sweat</span>
         <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>v0.9.4 · build 2026.05.14</span>
       </div>
@@ -89,7 +98,7 @@ export function ScreenJumper({ route, onNav }) {
     { id: "partners", label: "05 Partners" },
   ];
   return (
-    <div style={{
+    <div className="screen-jumper" style={{
       position: "fixed", top: 12, left: "50%", transform: "translateX(-50%)",
       zIndex: 100, display: "flex", padding: 4, borderRadius: 999,
       background: "rgba(255,255,255,0.78)", backdropFilter: "blur(20px) saturate(160%)",
@@ -119,11 +128,11 @@ export function AppNav({ onNav, active = "dashboard" }) {
     { id: "matches", label: "Matches", icon: "Map" },
   ];
   return (
-    <aside style={{
+    <aside className="app-nav-sidebar" aria-label="Athlete navigation" style={{
       width: 232, borderRight: "1px solid var(--hairline)", height: "100%",
       padding: "24px 16px", display: "flex", flexDirection: "column", gap: 4,
     }}>
-      <div style={{ padding: "0 8px 24px" }}>
+      <div className="nav-logo" style={{ padding: "0 8px 24px" }}>
         <Wordmark size={14} />
       </div>
       <div className="t-eyebrow" style={{ padding: "0 8px 8px" }}>Athlete</div>
@@ -132,6 +141,7 @@ export function AppNav({ onNav, active = "dashboard" }) {
         const isActive = it.id === active;
         return (
           <button key={it.id}
+            className="nav-item"
             onClick={() => onNav && onNav(it.id === "badges" ? "badge" : "dashboard")}
             style={{
               display: "flex", alignItems: "center", gap: 10, height: 36, padding: "0 10px",

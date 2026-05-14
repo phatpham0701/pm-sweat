@@ -1,4 +1,7 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Icon, LogoMark, Wordmark } from '../components/brand';
 
 export default function Onboarding({ onNav }) {
@@ -44,7 +47,7 @@ export default function Onboarding({ onNav }) {
       </div>
 
       <div className="container" style={{ padding: "56px 32px", maxWidth: 880, flex: 1 }}>
-        {step === 0 && <ProfileStep profile={profile} setProfile={setProfile} />}
+        {step === 0 && <ProfileStep profile={profile} onNext={(data) => { setProfile(data); setStep(1); }} />}
         {step === 1 && <DevicesStep devices={devices} setDevices={setDevices} />}
         {step === 2 && <AttestStep stage={attestStage} />}
         {step === 3 && <PassportStep profile={profile} onNav={onNav} />}
@@ -62,7 +65,11 @@ export default function Onboarding({ onNav }) {
                 <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.12em",
                   textTransform: "uppercase" }}>Hold tight · attestation in progress</span>
               )}
-              <button onClick={next} className="btn btn-primary"
+              <button
+                type={step === 0 ? "submit" : "button"}
+                form={step === 0 ? "profile-form" : undefined}
+                onClick={step > 0 ? next : undefined}
+                className="btn btn-primary"
                 disabled={step === 2 && attestStage < 4}
                 style={{ opacity: (step === 2 && attestStage < 4) ? 0.4 : 1 }}>
                 {step === 1 ? "Run first attestation" : step === 2 ? "Mint passport" : "Continue"}
@@ -76,14 +83,37 @@ export default function Onboarding({ onNav }) {
   );
 }
 
-function ProfileStep({ profile, setProfile }) {
-  const update = (k, v) => setProfile(p => ({ ...p, [k]: v }));
+const profileSchema = z.object({
+  name: z.string().min(2, "Min 2 characters"),
+  handle: z.string()
+    .min(2, "Min 2 characters")
+    .regex(/^[a-z0-9_]+$/, "Lowercase, numbers and _ only"),
+  age: z.coerce.number()
+    .int("Must be a whole number")
+    .min(18, "Must be 18 or older")
+    .max(80, "Must be 80 or younger"),
+  city: z.string().optional(),
+});
+
+function ProfileStep({ profile, onNext }) {
+  const [primary, setPrimary] = React.useState(profile.primary);
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: profile.name,
+      handle: profile.handle,
+      age: profile.age,
+      city: profile.city || "Ho Chi Minh City · sea",
+    },
+  });
+
   const sports = [
     { id: "running", label: "Running", icon: "Run" },
     { id: "swimming", label: "Swimming", icon: "Swim" },
     { id: "cycling", label: "Cycling", icon: "Bike" },
     { id: "strength", label: "Strength", icon: "Dumbbell" },
   ];
+
   return (
     <div className="fade-up">
       <span className="t-eyebrow">01 · Profile</span>
@@ -94,34 +124,39 @@ function ProfileStep({ profile, setProfile }) {
         We capture only what's needed to verify and match. Your handle is public. Age range is bucketed. Nothing else is shared without your explicit consent on each match.
       </p>
 
-      <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <Field label="Display name" hint="As shown to partners">
-          <input value={profile.name} onChange={(e) => update("name", e.target.value)} style={inputStyle} />
-        </Field>
-        <Field label="Handle" hint="Unique · used in your match url">
-          <div style={{ ...inputStyle, display: "flex", alignItems: "center", padding: "0 16px" }}>
-            <span style={{ color: "var(--muted)" }}>pmsweat.com/</span>
-            <input value={profile.handle} onChange={(e) => update("handle", e.target.value)}
-              style={{ flex: 1, border: 0, outline: 0, background: "transparent", fontFamily: "inherit", fontSize: 15, padding: 0 }} />
-            <Icon.CheckCircle size={18} color="var(--mint)" />
-          </div>
-        </Field>
-        <Field label="Age" hint="Bucketed to 25–34, 35–44 etc.">
-          <input value={profile.age} onChange={(e) => update("age", e.target.value)} style={inputStyle} />
-        </Field>
-        <Field label="City / region" hint="Approximate · for local matches">
-          <input defaultValue="Ho Chi Minh City · sea" style={inputStyle} />
-        </Field>
-      </div>
+      <form id="profile-form" onSubmit={handleSubmit((data) => onNext({ ...data, primary }))} noValidate>
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <Field label="Display name" hint="As shown to partners" error={errors.name?.message}>
+            <input {...register("name")} autoComplete="name"
+              style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--hairline)" }} />
+          </Field>
+          <Field label="Handle" hint="Unique · used in your match url" error={errors.handle?.message}>
+            <div style={{ ...inputStyle, display: "flex", alignItems: "center", padding: "0 16px",
+              borderColor: errors.handle ? "#ef4444" : "var(--hairline)" }}>
+              <span style={{ color: "var(--muted)" }}>pmsweat.com/</span>
+              <input {...register("handle")} autoComplete="username"
+                style={{ flex: 1, border: 0, outline: 0, background: "transparent", fontFamily: "inherit", fontSize: 15, padding: 0 }} />
+              {!errors.handle && <Icon.CheckCircle size={18} color="var(--mint)" />}
+            </div>
+          </Field>
+          <Field label="Age" hint="Bucketed to 25–34, 35–44 etc." error={errors.age?.message}>
+            <input {...register("age")} type="number" autoComplete="age"
+              style={{ ...inputStyle, borderColor: errors.age ? "#ef4444" : "var(--hairline)" }} />
+          </Field>
+          <Field label="City / region" hint="Approximate · for local matches" error={errors.city?.message}>
+            <input {...register("city")} autoComplete="address-level2" style={inputStyle} />
+          </Field>
+        </div>
+      </form>
 
       <div style={{ marginTop: 40 }}>
         <div className="t-eyebrow" style={{ marginBottom: 14 }}>Primary discipline</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
           {sports.map(s => {
             const IC = Icon[s.icon];
-            const active = profile.primary === s.id;
+            const active = primary === s.id;
             return (
-              <button key={s.id} onClick={() => update("primary", s.id)}
+              <button key={s.id} type="button" onClick={() => setPrimary(s.id)}
                 style={{
                   padding: 20, borderRadius: 12, background: "white",
                   border: `1px solid ${active ? "var(--navy)" : "var(--hairline)"}`,
@@ -386,13 +421,16 @@ function PassportStep({ profile, onNav }) {
   );
 }
 
-function Field({ label, hint, children }) {
+function Field({ label, hint, error, children }) {
   return (
     <label style={{ display: "block" }}>
       <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.12em",
         textTransform: "uppercase", marginBottom: 8 }}>{label}</div>
       {children}
-      {hint && <div className="t-small" style={{ marginTop: 6 }}>{hint}</div>}
+      {error
+        ? <div style={{ marginTop: 6, fontSize: 12, color: "#ef4444" }}>{error}</div>
+        : hint && <div className="t-small" style={{ marginTop: 6 }}>{hint}</div>
+      }
     </label>
   );
 }

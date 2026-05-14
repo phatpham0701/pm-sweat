@@ -1,8 +1,10 @@
 import React from 'react';
 import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function BadgeDetail({ onNav }) {
+  const isMobile = useIsMobile();
   const [selected, setSelected] = React.useState(3);
   const tiers = [
     { n: 1, name: "Foundation", cls: "tier-1", req: "Verified · consistent 4w", count: "All members" },
@@ -16,7 +18,7 @@ export default function BadgeDetail({ onNav }) {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "white" }}>
       <AppNav onNav={onNav} active="badges" />
-      <main style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
+      <main className="app-main-content" style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "20px 32px", borderBottom: "1px solid var(--hairline)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -30,7 +32,7 @@ export default function BadgeDetail({ onNav }) {
           </button>
         </div>
 
-        <div style={{ padding: 32, display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 32 }}>
+        <div style={{ padding: isMobile ? 16 : 32, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.2fr", gap: isMobile ? 16 : 32 }}>
           <div>
             <span className="t-eyebrow">Badge ladder</span>
             <h2 className="t-h2" style={{ margin: "4px 0 24px" }}>Five tiers, earned in sequence.</h2>
@@ -128,11 +130,11 @@ export default function BadgeDetail({ onNav }) {
                 <span className="t-eyebrow">Unlocks at this tier</span>
                 <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>3 perks</span>
               </div>
-              <div style={{ borderTop: "1px solid var(--hairline)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+              <div style={{ borderTop: "1px solid var(--hairline)", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr" }}>
                 {unlocksFor(selected).map((u, i) => {
                   const IC = Icon[u.icon];
                   return (
-                    <div key={i} style={{ padding: 20, borderRight: i < 2 ? "1px solid var(--hairline)" : "none" }}>
+                    <div key={i} style={{ padding: 20, borderRight: !isMobile && i < 2 ? "1px solid var(--hairline)" : "none", borderTop: isMobile && i > 0 ? "1px solid var(--hairline)" : "none" }}>
                       <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--ink-04)",
                         display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
                         <IC size={16} color="var(--navy)" />

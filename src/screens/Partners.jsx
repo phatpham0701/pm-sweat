@@ -1,8 +1,10 @@
 import React from 'react';
 import { Icon } from '../components/brand';
 import { PublicNav, Footer } from '../components/chrome';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export default function Partners({ onNav }) {
+  const isMobile = useIsMobile();
   return (
     <div>
       <section style={{ background: "var(--navy)", color: "white", position: "relative", overflow: "hidden" }}>
@@ -11,7 +13,7 @@ export default function Partners({ onNav }) {
         <div className="container" style={{ position: "relative" }}>
           <PublicNav onDark={true} onNav={onNav} route="partners" />
 
-          <div style={{ padding: "80px 0 96px", display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 64, alignItems: "end" }}>
+          <div style={{ padding: isMobile ? "40px 0 48px" : "80px 0 96px", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: isMobile ? 32 : 64, alignItems: "end" }}>
             <div>
               <div className="t-mono" style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase",
                 color: "rgba(255,255,255,0.55)", marginBottom: 28 }}>
@@ -59,7 +61,7 @@ export default function Partners({ onNav }) {
           <span className="lbl">The pitch</span>
           <span className="line" />
         </div>
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 12 : 16 }}>
           {[
             { k: "01", t: "Verified, not claimed", b: "Every athlete you reach has hardware-attested proof of recent effort. No filled-in surveys, no lookalike segments.", icon: "Verify" },
             { k: "02", t: "Targeted by tier and discipline", b: "Match your offer to athletes by verified tier, primary discipline, and zone profile. No raw biometric ever leaves the device.", icon: "Map" },
@@ -88,7 +90,7 @@ export default function Partners({ onNav }) {
             <span className="lbl">Targeting</span>
             <span className="line" />
           </div>
-          <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: 56, alignItems: "start" }}>
+          <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.1fr", gap: isMobile ? 32 : 56, alignItems: "start" }}>
             <div>
               <h2 className="t-h1" style={{ margin: 0, maxWidth: 460 }}>
                 Build an audience that's already moving.
@@ -124,9 +126,9 @@ export default function Partners({ onNav }) {
           <span className="lbl">Pricing</span>
           <span className="line" />
         </div>
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 2fr", gap: 56, alignItems: "start" }}>
+        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 2fr", gap: isMobile ? 24 : 56, alignItems: "start" }}>
           <h2 className="t-h1" style={{ margin: 0 }}>Pay per accepted match. <span style={{ color: "var(--muted)" }}>Never per impression.</span></h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
             {[
               { name: "Starter", price: "$0.40", unit: "per accepted match", lim: "Tier 1–2 audience · self-serve", pop: false },
               { name: "Verified", price: "$1.20", unit: "per accepted match", lim: "Tier 1–4 · campaign tools · api", pop: true },
@@ -165,8 +167,8 @@ export default function Partners({ onNav }) {
       {/* CASE STUDY */}
       <section className="container" style={{ padding: "80px 0 40px" }}>
         <div style={{
-          background: "white", border: "1px solid var(--hairline)", borderRadius: 20, padding: 56,
-          display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 56, alignItems: "center",
+          background: "white", border: "1px solid var(--hairline)", borderRadius: 20, padding: isMobile ? 28 : 56,
+          display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: isMobile ? 32 : 56, alignItems: "center",
         }}>
           <div>
             <span className="t-eyebrow">Case · origin supps</span>
