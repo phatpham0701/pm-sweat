@@ -66,7 +66,7 @@ export default function GoalsPage({ onNav }) {
     newlyCompleted.forEach(goal => {
       addNotification(user.id, 'GOAL_COMPLETED', { goalTitle: goal.title });
     });
-  }, [workouts.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user?.id, workouts.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function onSubmit(data) {
     addGoal(user.id, data);

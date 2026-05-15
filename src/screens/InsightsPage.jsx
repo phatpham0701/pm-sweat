@@ -1,22 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AppNav } from '../components/chrome';
 import { Icon } from '../components/brand';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useWorkoutStore } from '../stores/workoutStore';
 import StreakWidget from '../components/StreakWidget';
+import { ACTIVITY_META, INTENSITY_COLOR } from '../constants/activityMeta';
 
-const ACTIVITY_META = {
-  running:  { label: 'Running',  color: 'var(--mint)' },
-  cycling:  { label: 'Cycling',  color: 'var(--indigo)' },
-  strength: { label: 'Strength', color: '#F59E0B' },
-  swimming: { label: 'Swimming', color: '#0EA5E9' },
-};
-
-const INTENSITY_META = {
-  easy:     { label: 'Easy',     color: 'var(--mint)' },
-  moderate: { label: 'Moderate', color: '#F59E0B' },
-  hard:     { label: 'Hard',     color: '#EF4444' },
-};
+const INTENSITY_META = Object.entries(INTENSITY_COLOR).map(([key, color]) => ({
+  key,
+  label: key.charAt(0).toUpperCase() + key.slice(1),
+  color,
+}));
 
 function BarChart({ data, colorKey, defaultColor = 'var(--navy)' }) {
   const max = Math.max(...data.map(d => d.count), 1);
@@ -67,7 +61,53 @@ export default function InsightsPage({ onNav }) {
   const isMobile = useIsMobile();
   const { workouts, getStats } = useWorkoutStore();
 
-  if (!workouts.length) {
+  // Hooks must run unconditionally — compute even if empty (returns zeroes/empty arrays)
+  const stats = getStats();
+  const analytics = useMemo(() => {
+    if (!workouts.length) return null;
+    const totalDistance = workouts.reduce((s, w) => s + (w.distance_km || 0), 0);
+    const totalCalories = workouts.reduce((s, w) => s + (w.calories_burned || 0), 0);
+    const hrWorkouts = workouts.filter(w => w.avg_heart_rate > 0);
+    const avgHR = hrWorkouts.length > 0
+      ? Math.round(hrWorkouts.reduce((s, w) => s + w.avg_heart_rate, 0) / hrWorkouts.length)
+      : 0;
+
+    const activityData = Object.entries(ACTIVITY_META).map(([type, meta]) => ({
+      label: meta.label.slice(0, 3),
+      count: workouts.filter(w => w.activity_type === type).length,
+      color: meta.color,
+    }));
+
+    const now = new Date();
+    const weeklyData = [3, 2, 1, 0].map(weeksAgo => {
+      const weekEnd = new Date(now);
+      weekEnd.setDate(now.getDate() - weeksAgo * 7);
+      weekEnd.setHours(23, 59, 59, 999);
+      const weekStart = new Date(weekEnd);
+      weekStart.setDate(weekEnd.getDate() - 6);
+      weekStart.setHours(0, 0, 0, 0);
+      return {
+        label: weeksAgo === 0 ? 'Now' : `W-${weeksAgo}`,
+        count: workouts.filter(w => { const d = new Date(w.created_at); return d >= weekStart && d <= weekEnd; }).length,
+      };
+    });
+
+    const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const dayData = DAYS.map((label, i) => ({
+      label,
+      count: workouts.filter(w => { const d = new Date(w.created_at).getDay(); return (d === 0 ? 6 : d - 1) === i; }).length,
+    }));
+
+    const intensityData = INTENSITY_META.map(({ key, label, color }) => ({
+      label,
+      count: workouts.filter(w => w.intensity_level === key).length,
+      color,
+    }));
+
+    return { totalDistance, totalCalories, avgHR, activityData, weeklyData, dayData, intensityData };
+  }, [workouts]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!analytics) {
     return (
       <div style={{ display: 'flex', minHeight: '100vh', background: 'white' }}>
         <AppNav onNav={onNav} active="insights" />
@@ -83,47 +123,7 @@ export default function InsightsPage({ onNav }) {
     );
   }
 
-  const stats = getStats();
-  const totalDistance = workouts.reduce((s, w) => s + (w.distance_km || 0), 0);
-  const totalCalories = workouts.reduce((s, w) => s + (w.calories_burned || 0), 0);
-  const hrWorkouts = workouts.filter(w => w.avg_heart_rate > 0);
-  const avgHR = hrWorkouts.length > 0 ? Math.round(hrWorkouts.reduce((s, w) => s + w.avg_heart_rate, 0) / hrWorkouts.length) : 0;
-
-  // Activity breakdown
-  const activityData = Object.entries(ACTIVITY_META).map(([type, meta]) => ({
-    label: meta.label.slice(0, 3),
-    count: workouts.filter(w => w.activity_type === type).length,
-    color: meta.color,
-  }));
-
-  // Last 4 weeks
-  const now = new Date();
-  const weeklyData = [3, 2, 1, 0].map(weeksAgo => {
-    const weekEnd = new Date(now);
-    weekEnd.setDate(now.getDate() - weeksAgo * 7);
-    weekEnd.setHours(23, 59, 59, 999);
-    const weekStart = new Date(weekEnd);
-    weekStart.setDate(weekEnd.getDate() - 6);
-    weekStart.setHours(0, 0, 0, 0);
-    return {
-      label: weeksAgo === 0 ? 'Now' : `W-${weeksAgo}`,
-      count: workouts.filter(w => { const d = new Date(w.created_at); return d >= weekStart && d <= weekEnd; }).length,
-    };
-  });
-
-  // Day of week (Mon=0 ... Sun=6)
-  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const dayData = DAYS.map((label, i) => ({
-    label,
-    count: workouts.filter(w => { const d = new Date(w.created_at).getDay(); return (d === 0 ? 6 : d - 1) === i; }).length,
-  }));
-
-  // Intensity distribution
-  const intensityData = Object.entries(INTENSITY_META).map(([key, meta]) => ({
-    label: meta.label,
-    count: workouts.filter(w => w.intensity_level === key).length,
-    color: meta.color,
-  }));
+  const { totalDistance, totalCalories, avgHR, activityData, weeklyData, dayData, intensityData } = analytics;
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'white' }}>

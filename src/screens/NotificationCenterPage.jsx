@@ -60,7 +60,7 @@ export default function NotificationCenterPage({ onNav }) {
             <div style={{ display: 'flex', gap: 8 }}>
               {unread > 0 && (
                 <button className="btn btn-sm btn-secondary" onClick={() => markAllRead(user.id)}>
-                  Mark all read
+                  Mark all read ({unread})
                 </button>
               )}
               <button className="btn btn-sm btn-secondary" onClick={() => clearAll(user.id)}>

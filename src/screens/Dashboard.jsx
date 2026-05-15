@@ -11,6 +11,13 @@ const SV_TARGET = 3284;
 const SV_ANIM_FROM = 3100;
 const CHART_POINTS = [12, 18, 24, 22, 28, 32, 30, 36, 42, 38, 46, 52];
 
+function getISOWeek(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
 function getTimeGreeting() {
   const h = new Date().getHours();
   if (h < 12) return 'Good morning';
@@ -47,7 +54,7 @@ export default function Dashboard({ onNav }) {
           padding: isMobile ? "16px 20px" : "20px 32px", borderBottom: "1px solid var(--hairline)",
         }}>
           <div>
-            <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>Overview · week 19</span>
+            <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>Overview · week {getISOWeek(new Date())}</span>
             <h1 className="t-h2" style={{ margin: "4px 0 0" }}>{getTimeGreeting()}, {firstName}.</h1>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>

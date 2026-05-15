@@ -24,7 +24,7 @@ export default function WorkoutsPage({ onNav }) {
   const {
     workouts, garminAuth, filter, isLoading,
     loadUserWorkouts, setFilter, setSelectedWorkout, selectedWorkout,
-    addWorkout, addWorkouts, setGarminAuth, setLoading,
+    addWorkout, setGarminAuth, setLoading,
     getFilteredWorkouts, getStats,
   } = useWorkoutStore();
 
@@ -54,7 +54,6 @@ export default function WorkoutsPage({ onNav }) {
       const result = await mockAuthService.connectToGarmin(user.id, user.email);
       if (result.success) {
         setGarminAuth(user.id, result.token);
-        addWorkouts(user.id, []);
         loadUserWorkouts(user.id);
         setConnectMsg(`Connected! ${result.workoutsGenerated} workouts generated · ${result.creditsEarned} sv earned`);
       }

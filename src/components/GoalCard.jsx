@@ -60,7 +60,14 @@ export default function GoalCard({ goal, onDelete }) {
             {goal.current_value} / {goal.target_value}
           </span>
         </div>
-        <div style={{ height: 7, background: 'var(--ink-04)', borderRadius: 999, overflow: 'hidden' }}>
+        <div
+          role="progressbar"
+          aria-valuenow={goal.current_value}
+          aria-valuemin={0}
+          aria-valuemax={goal.target_value}
+          aria-label={`${goal.title}: ${pct}% complete`}
+          style={{ height: 7, background: 'var(--ink-04)', borderRadius: 999, overflow: 'hidden' }}
+        >
           <div style={{
             height: '100%',
             width: `${pct}%`,

@@ -1,14 +1,6 @@
 import React from 'react';
 import { Icon } from './brand';
-
-const ACTIVITY_META = {
-  running:  { icon: 'Run',      label: 'Running',  color: 'var(--mint)' },
-  cycling:  { icon: 'Bike',     label: 'Cycling',  color: 'var(--indigo)' },
-  strength: { icon: 'Dumbbell', label: 'Strength', color: '#F59E0B' },
-  swimming: { icon: 'Swim',     label: 'Swimming', color: '#0EA5E9' },
-};
-
-const INTENSITY_COLOR = { easy: 'var(--mint)', moderate: '#F59E0B', hard: '#EF4444' };
+import { ACTIVITY_META, INTENSITY_COLOR } from '../constants/activityMeta';
 
 function formatDateTime(iso) {
   return new Date(iso).toLocaleDateString('en-US', {
