@@ -90,7 +90,7 @@ export const useWorkoutStore = create((set, get) => ({
   getStats: () => {
     const { workouts } = get();
     if (!workouts.length) {
-      return { totalWorkouts: 0, totalCredits: 0, avgPerWeek: 0, currentStreak: 0, lastWorkoutDate: null, monthWorkouts: 0 };
+      return { totalWorkouts: 0, totalCredits: 0, avgPerWeek: 0, currentStreak: 0, longestStreak: 0, streakMultiplier: 1.0, lastWorkoutDate: null, monthWorkouts: 0 };
     }
 
     const now = new Date();
@@ -114,6 +114,22 @@ export const useWorkoutStore = create((set, get) => ({
       }
     }
 
+    // Compute longest streak across all workout history
+    const uniqueDates = [...new Set(workouts.map(w => new Date(w.created_at).toDateString()))]
+      .sort((a, b) => new Date(a) - new Date(b));
+    let longestStreak = 0;
+    let runLen = 0;
+    for (let i = 0; i < uniqueDates.length; i++) {
+      if (i === 0) {
+        runLen = 1;
+      } else {
+        const diff = Math.round((new Date(uniqueDates[i]) - new Date(uniqueDates[i - 1])) / 86400000);
+        runLen = diff === 1 ? runLen + 1 : 1;
+      }
+      longestStreak = Math.max(longestStreak, runLen);
+    }
+
+    const streakMultiplier = streak < 14 ? 1.0 : streak < 28 ? 1.1 : streak < 56 ? 1.2 : streak < 84 ? 1.3 : 1.5;
     const sorted = [...workouts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     return {
@@ -121,6 +137,8 @@ export const useWorkoutStore = create((set, get) => ({
       totalCredits,
       avgPerWeek,
       currentStreak: streak,
+      longestStreak,
+      streakMultiplier,
       lastWorkoutDate: sorted[0]?.created_at || null,
       monthWorkouts: monthWorkouts.length,
     };

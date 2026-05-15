@@ -4,6 +4,7 @@ import { Icon } from '../components/brand';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useAuthStore } from '../stores/authStore';
 import { useWorkoutStore } from '../stores/workoutStore';
+import { useNotificationStore } from '../stores/notificationStore';
 import { mockAuthService } from '../services/mockAuthService';
 import WorkoutList from '../components/WorkoutList';
 import WorkoutDetail from '../components/WorkoutDetail';
@@ -27,13 +28,20 @@ export default function WorkoutsPage({ onNav }) {
     getFilteredWorkouts, getStats,
   } = useWorkoutStore();
 
+  const { addNotification, loadNotifications, notifications } = useNotificationStore();
+
   const [showManual, setShowManual] = useState(false);
   const [connectMsg, setConnectMsg] = useState('');
   const [syncMsg, setSyncMsg] = useState('');
 
+  const STREAK_MILESTONES = [7, 14, 21, 30, 60, 90];
+
   useEffect(() => {
-    if (user?.id) loadUserWorkouts(user.id);
-  }, [user?.id, loadUserWorkouts]);
+    if (user?.id) {
+      loadUserWorkouts(user.id);
+      loadNotifications(user.id);
+    }
+  }, [user?.id, loadUserWorkouts, loadNotifications]);
 
   const isConnected = !!garminAuth;
   const filtered = getFilteredWorkouts();
@@ -67,8 +75,20 @@ export default function WorkoutsPage({ onNav }) {
     }
   }
 
+  function fireStreakNotification(statsAfter) {
+    const s = statsAfter.currentStreak;
+    if (!STREAK_MILESTONES.includes(s)) return;
+    const alreadyFired = notifications.some(n => n.type === 'STREAK_MILESTONE' && n.data?.days === s);
+    if (!alreadyFired) {
+      addNotification(user.id, 'STREAK_MILESTONE', { days: s, multiplier: statsAfter.streakMultiplier });
+    }
+  }
+
   function handleManualSave(workout) {
     addWorkout(user.id, workout);
+    addNotification(user.id, 'WORKOUT_LOGGED', { credits: workout.sweat_credits_earned });
+    const statsAfter = useWorkoutStore.getState().getStats();
+    fireStreakNotification(statsAfter);
     setShowManual(false);
   }
 

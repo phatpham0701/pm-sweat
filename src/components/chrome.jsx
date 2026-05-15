@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Wordmark, Icon } from './brand';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useAuthStore } from '../stores/authStore';
+import { useNotificationStore } from '../stores/notificationStore';
 
 function AuthActions({ onNav, onDark, isMobile }) {
   const { isLoggedIn, user, logout } = useAuthStore();
@@ -128,17 +129,20 @@ export function Footer() {
 
 export function ScreenJumper({ route, onNav }) {
   const screens = [
-    { id: "landing", label: "01 Landing" },
-    { id: "onboarding", label: "02 Onboarding" },
-    { id: "dashboard", label: "03 Dashboard" },
-    { id: "badge", label: "04 Badge" },
-    { id: "partners", label: "05 Partners" },
-    { id: "login", label: "06 Login" },
-    { id: "signup", label: "07 Signup" },
-    { id: "profile", label: "08 Profile" },
-    { id: "leaderboards", label: "09 Rankings" },
-    { id: "friends", label: "10 Friends" },
-    { id: "workouts", label: "11 Workouts" },
+    { id: "landing",       label: "01 Landing" },
+    { id: "onboarding",    label: "02 Onboarding" },
+    { id: "dashboard",     label: "03 Dashboard" },
+    { id: "badge",         label: "04 Badge" },
+    { id: "partners",      label: "05 Partners" },
+    { id: "login",         label: "06 Login" },
+    { id: "signup",        label: "07 Signup" },
+    { id: "profile",       label: "08 Profile" },
+    { id: "leaderboards",  label: "09 Rankings" },
+    { id: "friends",       label: "10 Friends" },
+    { id: "workouts",      label: "11 Workouts" },
+    { id: "insights",      label: "12 Insights" },
+    { id: "goals",         label: "13 Goals" },
+    { id: "notifications", label: "14 Alerts" },
   ];
   return (
     <div className="screen-jumper" style={{
@@ -164,9 +168,19 @@ export function ScreenJumper({ route, onNav }) {
 
 export function AppNav({ onNav, active = "dashboard" }) {
   const { user, logout } = useAuthStore();
+  const { notifications, loadNotifications } = useNotificationStore();
+
+  useEffect(() => {
+    if (user?.id) loadNotifications(user.id);
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   const items = [
     { id: "dashboard",    label: "Overview",  icon: "Chart",    route: "dashboard" },
     { id: "workouts",     label: "Workouts",  icon: "Run",      route: "workouts" },
+    { id: "insights",     label: "Insights",  icon: "Flag",     route: "insights" },
+    { id: "goals",        label: "Goals",     icon: "Target",   route: "goals" },
     { id: "leaderboards", label: "Rankings",  icon: "Medal",    route: "leaderboards" },
     { id: "friends",      label: "Friends",   icon: "Users",    route: "friends" },
     { id: "badges",       label: "Badges",    icon: "Trophy",   route: "badge" },
@@ -206,6 +220,36 @@ export function AppNav({ onNav, active = "dashboard" }) {
       })}
       <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 4 }}>
         <div className="t-eyebrow" style={{ padding: "0 8px 8px" }}>Account</div>
+        <button
+          onClick={() => onNav && onNav("notifications")}
+          aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+          style={{
+            display: "flex", alignItems: "center", gap: 10, height: 36, padding: "0 10px",
+            borderRadius: 8, color: "var(--muted)", fontSize: 14, transition: "all 150ms",
+            background: active === "notifications" ? "var(--ink-04)" : "transparent",
+          }}
+          onMouseEnter={(e) => { if (active !== "notifications") e.currentTarget.style.background = "var(--ink-04)"; }}
+          onMouseLeave={(e) => { if (active !== "notifications") e.currentTarget.style.background = "transparent"; }}
+          onFocus={(e) => { if (active !== "notifications") e.currentTarget.style.background = "var(--ink-04)"; }}
+          onBlur={(e) => { if (active !== "notifications") e.currentTarget.style.background = "transparent"; }}
+        >
+          <div style={{ position: "relative" }}>
+            <Icon.Bell size={16} color={active === "notifications" ? "var(--navy)" : "var(--muted)"} />
+            {unreadCount > 0 && (
+              <span style={{
+                position: "absolute", top: -4, right: -5,
+                minWidth: 14, height: 14, borderRadius: 999,
+                background: "#EF4444", color: "white",
+                fontSize: 8, fontFamily: "var(--font-mono)", fontWeight: 700,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                padding: "0 2px",
+              }}>
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </div>
+          <span style={{ color: active === "notifications" ? "var(--navy)" : "var(--muted)" }}>Alerts</span>
+        </button>
         <button
           onClick={() => onNav && onNav("profile")}
           style={{

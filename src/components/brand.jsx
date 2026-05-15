@@ -64,4 +64,7 @@ export const Icon = {
   Bolt: (p) => <Ic {...p}><path d="M13 3L4 14h6l-1 7 9-11h-6l1-7z" /></Ic>,
   Users: (p) => <Ic {...p}><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3" /><path d="M21 21v-1.5a4 4 0 00-3-3.87" /><circle cx="9" cy="8" r="3" /><path d="M3 21v-1.5a4 4 0 014-4h4a4 4 0 014 4V21" /></Ic>,
   Medal: (p) => <Ic {...p}><circle cx="12" cy="9" r="5" /><path d="M9 14.5l-3 6.5 3-1 3 1 3-1 3 1-3-6.5" /></Ic>,
+  Bell: (p) => <Ic {...p}><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.7 21a1.9 1.9 0 01-3.4 0" /></Ic>,
+  Target: (p) => <Ic {...p}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" /></Ic>,
+  Flag: (p) => <Ic {...p}><path d="M4 4v16" /><path d="M4 4l14 4-14 5" /></Ic>,
 };

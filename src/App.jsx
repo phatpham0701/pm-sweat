@@ -13,6 +13,9 @@ import { Profile } from './screens/Profile';
 import LeaderboardsPage from './screens/LeaderboardsPage';
 import FriendsPage from './screens/FriendsPage';
 import WorkoutsPage from './screens/WorkoutsPage';
+import InsightsPage from './screens/InsightsPage';
+import GoalsPage from './screens/GoalsPage';
+import NotificationCenterPage from './screens/NotificationCenterPage';
 import { useAuthStore } from './stores/authStore';
 import { Analytics } from '@vercel/analytics/react';
 import './styles.css';
@@ -28,7 +31,10 @@ const ROUTE_MAP = {
   profile: '/profile',
   leaderboards: '/leaderboards',
   friends: '/friends',
-  workouts: '/workouts',
+  workouts:      '/workouts',
+  insights:      '/insights',
+  goals:         '/goals',
+  notifications: '/notifications',
 };
 
 const PATH_TO_KEY = {
@@ -42,7 +48,10 @@ const PATH_TO_KEY = {
   '/profile': 'profile',
   '/leaderboards': 'leaderboards',
   '/friends': 'friends',
-  '/workouts': 'workouts',
+  '/workouts':      'workouts',
+  '/insights':      'insights',
+  '/goals':         'goals',
+  '/notifications': 'notifications',
 };
 
 function AppRoutes() {
@@ -87,6 +96,15 @@ function AppRoutes() {
         } />
         <Route path="/workouts" element={
           <ProtectedRoute><WorkoutsPage onNav={go} /></ProtectedRoute>
+        } />
+        <Route path="/insights" element={
+          <ProtectedRoute><InsightsPage onNav={go} /></ProtectedRoute>
+        } />
+        <Route path="/goals" element={
+          <ProtectedRoute><GoalsPage onNav={go} /></ProtectedRoute>
+        } />
+        <Route path="/notifications" element={
+          <ProtectedRoute><NotificationCenterPage onNav={go} /></ProtectedRoute>
         } />
         <Route path="*" element={<Landing onNav={go} />} />
       </Routes>
