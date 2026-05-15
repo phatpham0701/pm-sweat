@@ -10,6 +10,8 @@ import Partners from './screens/Partners';
 import { Login } from './screens/Login';
 import { Signup } from './screens/Signup';
 import { Profile } from './screens/Profile';
+import LeaderboardsPage from './screens/LeaderboardsPage';
+import FriendsPage from './screens/FriendsPage';
 import { useAuthStore } from './stores/authStore';
 import { Analytics } from '@vercel/analytics/react';
 import './styles.css';
@@ -23,6 +25,8 @@ const ROUTE_MAP = {
   login: '/login',
   signup: '/signup',
   profile: '/profile',
+  leaderboards: '/leaderboards',
+  friends: '/friends',
 };
 
 const PATH_TO_KEY = {
@@ -34,6 +38,8 @@ const PATH_TO_KEY = {
   '/login': 'login',
   '/signup': 'signup',
   '/profile': 'profile',
+  '/leaderboards': 'leaderboards',
+  '/friends': 'friends',
 };
 
 function AppRoutes() {
@@ -69,6 +75,12 @@ function AppRoutes() {
         } />
         <Route path="/profile" element={
           <ProtectedRoute><Profile /></ProtectedRoute>
+        } />
+        <Route path="/leaderboards" element={
+          <ProtectedRoute><LeaderboardsPage onNav={go} /></ProtectedRoute>
+        } />
+        <Route path="/friends" element={
+          <ProtectedRoute><FriendsPage onNav={go} /></ProtectedRoute>
         } />
         <Route path="*" element={<Landing onNav={go} />} />
       </Routes>

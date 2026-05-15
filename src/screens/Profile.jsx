@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '../stores/authStore';
 import { Wordmark } from '../components/brand';
+import RankBadge from '../components/leaderboards/RankBadge';
+import { useLeaderboard } from '../hooks/useLeaderboard';
 
 const field = {
   width: '100%',
@@ -20,6 +22,7 @@ export function Profile() {
   const navigate = useNavigate();
   const { user, updateProfile, logout } = useAuthStore();
   const [saved, setSaved] = useState(false);
+  const { userEntry } = useLeaderboard('global');
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -69,6 +72,28 @@ export function Profile() {
               <div className="t-small">@{user?.handle} · {user?.email}</div>
             </div>
           </div>
+
+          {/* Rank badge */}
+          {userEntry && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24,
+              padding: '14px 16px', background: 'var(--ink-04)', borderRadius: 'var(--r-md)',
+            }}>
+              <RankBadge rank={userEntry.rank} score={userEntry.globalScore} />
+              <div>
+                <div className="t-eyebrow" style={{ marginBottom: 4 }}>Global Rank</div>
+                <div style={{ fontWeight: 600, fontSize: 18 }}>#{userEntry.rank}</div>
+                <div className="t-small">{userEntry.globalScore.toLocaleString()} pts · {userEntry.weeklyScore} this week</div>
+              </div>
+              <button
+                onClick={() => navigate('/leaderboards')}
+                className="btn btn-secondary btn-sm"
+                style={{ marginLeft: 'auto' }}
+              >
+                View Rankings
+              </button>
+            </div>
+          )}
 
           {saved && (
             <div style={{ padding: '10px 14px', background: 'rgba(16,185,129,0.1)', color: 'var(--mint)', borderRadius: 'var(--r-sm)', marginBottom: 20, fontSize: 14, fontWeight: 500 }}>

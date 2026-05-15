@@ -62,4 +62,6 @@ export const Icon = {
   Fire: (p) => <Ic {...p}><path d="M12 3c1 4 5 5 5 10a5 5 0 11-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z" /></Ic>,
   Calendar: (p) => <Ic {...p}><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 9h18" /><path d="M8 3v4" /><path d="M16 3v4" /></Ic>,
   Bolt: (p) => <Ic {...p}><path d="M13 3L4 14h6l-1 7 9-11h-6l1-7z" /></Ic>,
+  Users: (p) => <Ic {...p}><path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3" /><path d="M21 21v-1.5a4 4 0 00-3-3.87" /><circle cx="9" cy="8" r="3" /><path d="M3 21v-1.5a4 4 0 014-4h4a4 4 0 014 4V21" /></Ic>,
+  Medal: (p) => <Ic {...p}><circle cx="12" cy="9" r="5" /><path d="M9 14.5l-3 6.5 3-1 3 1 3-1 3 1-3-6.5" /></Ic>,
 };

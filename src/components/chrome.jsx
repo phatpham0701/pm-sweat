@@ -136,6 +136,8 @@ export function ScreenJumper({ route, onNav }) {
     { id: "login", label: "06 Login" },
     { id: "signup", label: "07 Signup" },
     { id: "profile", label: "08 Profile" },
+    { id: "leaderboards", label: "09 Rankings" },
+    { id: "friends", label: "10 Friends" },
   ];
   return (
     <div className="screen-jumper" style={{
@@ -162,11 +164,11 @@ export function ScreenJumper({ route, onNav }) {
 export function AppNav({ onNav, active = "dashboard" }) {
   const { user, logout } = useAuthStore();
   const items = [
-    { id: "dashboard", label: "Overview", icon: "Chart" },
-    { id: "verify", label: "Verify", icon: "Verify" },
-    { id: "badges", label: "Badges", icon: "Trophy" },
-    { id: "rewards", label: "Rewards", icon: "Spark" },
-    { id: "matches", label: "Matches", icon: "Map" },
+    { id: "dashboard",    label: "Overview",  icon: "Chart",  route: "dashboard" },
+    { id: "leaderboards", label: "Rankings",  icon: "Medal",  route: "leaderboards" },
+    { id: "friends",      label: "Friends",   icon: "Users",  route: "friends" },
+    { id: "badges",       label: "Badges",    icon: "Trophy", route: "badge" },
+    { id: "rewards",      label: "Rewards",   icon: "Spark",  route: "dashboard" },
   ];
   return (
     <aside className="app-nav-sidebar" aria-label="Athlete navigation" style={{
@@ -183,7 +185,7 @@ export function AppNav({ onNav, active = "dashboard" }) {
         return (
           <button key={it.id}
             className="nav-item"
-            onClick={() => onNav && onNav(it.id === "badges" ? "badge" : "dashboard")}
+            onClick={() => onNav && onNav(it.route)}
             style={{
               display: "flex", alignItems: "center", gap: 10, height: 36, padding: "0 10px",
               borderRadius: 8, color: isActive ? "var(--navy)" : "var(--muted)",
