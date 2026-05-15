@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from '../components/brand';
 import { AppNav } from '../components/chrome';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useAuthStore } from '../stores/authStore';
+import { useWorkoutStore } from '../stores/workoutStore';
+import ManualWorkoutForm from '../components/ManualWorkoutForm';
+import WorkoutDetail from '../components/WorkoutDetail';
 
 const SV_TARGET = 3284;
 const SV_ANIM_FROM = 3100;
@@ -19,6 +22,22 @@ export default function Dashboard({ onNav }) {
   const isMobile = useIsMobile();
   const { user } = useAuthStore();
   const firstName = user?.name?.split(' ')[0] || 'Athlete';
+  const { loadUserWorkouts, workouts, getStats, setSelectedWorkout, selectedWorkout } = useWorkoutStore();
+  const [showManual, setShowManual] = useState(false);
+
+  useEffect(() => {
+    if (user?.id) loadUserWorkouts(user.id);
+  }, [user?.id, loadUserWorkouts]);
+
+  const stats = getStats();
+  const recentWorkouts = workouts.slice(0, 3);
+
+  function handleManualSave(workout) {
+    const { addWorkout } = useWorkoutStore.getState();
+    addWorkout(user.id, workout);
+    setShowManual(false);
+  }
+
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "white" }}>
       <AppNav onNav={onNav} active="dashboard" />
@@ -32,7 +51,7 @@ export default function Dashboard({ onNav }) {
             <h1 className="t-h2" style={{ margin: "4px 0 0" }}>{getTimeGreeting()}, {firstName}.</h1>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <button className="btn btn-sm btn-secondary">
+            <button className="btn btn-sm btn-secondary" onClick={() => setShowManual(true)}>
               <Icon.Plus size={14} /> Log session
             </button>
             <button className="btn btn-sm btn-primary" onClick={() => onNav("badge")}>
@@ -41,20 +60,72 @@ export default function Dashboard({ onNav }) {
           </div>
         </div>
 
-        <div style={{ padding: isMobile ? 16 : 32, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.55fr 1fr", gap: isMobile ? 16 : 24 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <HeroSweatCard onNav={onNav} isMobile={isMobile} />
-            <ActivityCard isMobile={isMobile} />
-            <MatchesCard onNav={onNav} isMobile={isMobile} />
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            <BadgeProgressCard onNav={onNav} />
-            <DevicesCard />
-            <UpcomingCard />
+        <div style={{ padding: isMobile ? 16 : 32 }}>
+          {/* Workout stats strip */}
+          {stats.totalWorkouts > 0 && (
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)",
+              gap: 12, marginBottom: 24,
+            }}>
+              <DashStatCard icon="Dumbbell" label="Workouts" value={stats.totalWorkouts} onClick={() => onNav("workouts")} />
+              <DashStatCard icon="Fire" label="Sweat Credits" value={stats.totalCredits} onClick={() => onNav("workouts")} />
+              <DashStatCard icon="Chart" label="Avg / Week" value={stats.avgPerWeek} onClick={() => onNav("workouts")} />
+              <DashStatCard icon="Bolt" label="Streak" value={`${stats.currentStreak}d`} onClick={() => onNav("workouts")} />
+            </div>
+          )}
+
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.55fr 1fr", gap: isMobile ? 16 : 24 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <HeroSweatCard onNav={onNav} isMobile={isMobile} />
+              <ActivityCard isMobile={isMobile} recentWorkouts={recentWorkouts} onSelectWorkout={setSelectedWorkout} onNav={onNav} />
+              <MatchesCard onNav={onNav} isMobile={isMobile} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <BadgeProgressCard onNav={onNav} />
+              <DevicesCard onNav={onNav} />
+              <UpcomingCard />
+            </div>
           </div>
         </div>
       </main>
+
+      {showManual && (
+        <ManualWorkoutForm userId={user?.id} onSave={handleManualSave} onClose={() => setShowManual(false)} />
+      )}
+      {selectedWorkout && (
+        <WorkoutDetail workout={selectedWorkout} onClose={() => setSelectedWorkout(null)} />
+      )}
     </div>
+  );
+}
+
+function DashStatCard({ icon, label, value, onClick }) {
+  const IC = Icon[icon];
+  return (
+    <button
+      onClick={onClick}
+      className="card"
+      style={{
+        padding: "14px 18px", display: "flex", alignItems: "center", gap: 12,
+        cursor: "pointer", width: "100%", textAlign: "left", transition: "all 150ms",
+      }}
+      onMouseEnter={(e) => e.currentTarget.style.background = "var(--ink-04)"}
+      onMouseLeave={(e) => e.currentTarget.style.background = "white"}
+    >
+      <div style={{
+        width: 34, height: 34, borderRadius: 9, background: "var(--ink-04)",
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+      }}>
+        <IC size={15} color="var(--navy)" />
+      </div>
+      <div>
+        <div style={{ fontSize: 17, fontWeight: 700, fontFamily: "var(--font-mono)", color: "var(--navy)" }}>{value}</div>
+        <div className="t-mono" style={{ fontSize: 10, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 1 }}>
+          {label}
+        </div>
+      </div>
+    </button>
   );
 }
 
@@ -134,30 +205,60 @@ function HeroSweatCard({ onNav, isMobile }) {
   );
 }
 
-function ActivityCard({ isMobile }) {
-  const sessions = [
+const ACTIVITY_ICON = { running: "Run", cycling: "Bike", strength: "Dumbbell", swimming: "Swim" };
+
+function formatShortDate(iso) {
+  const d = new Date(iso);
+  const today = new Date();
+  const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return "Today";
+  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function ActivityCard({ isMobile, recentWorkouts, onSelectWorkout, onNav }) {
+  const FALLBACK = [
     { day: "Today", icon: "Run", title: "Tempo run · 10.4 km", meta: "04:52 /km · zone 3 · garmin", sv: "+48" },
     { day: "Yesterday", icon: "Dumbbell", title: "Push day · 6×5", meta: "RPE 8 · hevy log", sv: "+24" },
     { day: "May 09", icon: "Bike", title: "Long ride · 42.8 km", meta: "312 W avg · wahoo", sv: "+61" },
     { day: "May 08", icon: "Swim", title: "Pool · 2,400 m", meta: "38:14 · apple watch", sv: "+32" },
     { day: "May 07", icon: "Run", title: "Easy recovery · 6.2 km", meta: "05:48 /km · zone 2", sv: "+19" },
   ];
+
+  const hasReal = recentWorkouts && recentWorkouts.length > 0;
+  const sessions = hasReal
+    ? recentWorkouts.map(w => ({
+        day: formatShortDate(w.created_at),
+        icon: ACTIVITY_ICON[w.activity_type] || "Run",
+        title: `${w.activity_type.charAt(0).toUpperCase() + w.activity_type.slice(1)}${w.distance_km > 0 ? ` · ${w.distance_km} km` : ""}`,
+        meta: `${w.duration_minutes}min · ${w.intensity_level} · ${w.avg_heart_rate}bpm`,
+        sv: `+${w.sweat_credits_earned}`,
+        workout: w,
+      }))
+    : FALLBACK;
   return (
     <div className="card" style={{ padding: 0 }}>
       <div style={{ padding: "20px 24px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <span className="t-eyebrow">Activity · recent proofs</span>
-          <h3 className="t-h3" style={{ margin: "4px 0 0" }}>Last 5 verified sessions</h3>
+          <h3 className="t-h3" style={{ margin: "4px 0 0" }}>
+            {hasReal ? `Last ${sessions.length} sessions` : "Last 5 verified sessions"}
+          </h3>
         </div>
-        <button className="btn btn-sm btn-ghost">All activity <Icon.ArrowRight size={12} /></button>
+        <button className="btn btn-sm btn-ghost" onClick={() => onNav && onNav("workouts")}>
+          All activity <Icon.ArrowRight size={12} />
+        </button>
       </div>
       {isMobile ? (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {sessions.map((s, i) => {
             const IC = Icon[s.icon];
             return (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12,
-                padding: "14px 20px", borderTop: "1px solid var(--hairline)" }}>
+              <div key={i}
+                onClick={() => s.workout && onSelectWorkout && onSelectWorkout(s.workout)}
+                style={{ display: "flex", alignItems: "center", gap: 12,
+                  padding: "14px 20px", borderTop: "1px solid var(--hairline)",
+                  cursor: s.workout ? "pointer" : "default" }}>
                 <div style={{ width: 36, height: 36, borderRadius: 8, background: "var(--ink-04)",
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <IC size={16} color="var(--navy)" />
@@ -190,7 +291,10 @@ function ActivityCard({ isMobile }) {
             {sessions.map((s, i) => {
               const IC = Icon[s.icon];
               return (
-                <tr key={i} style={{ borderBottom: i < sessions.length - 1 ? "1px solid var(--hairline)" : "none" }}>
+                <tr key={i}
+                  onClick={() => s.workout && onSelectWorkout && onSelectWorkout(s.workout)}
+                  style={{ borderBottom: i < sessions.length - 1 ? "1px solid var(--hairline)" : "none",
+                    cursor: s.workout ? "pointer" : "default" }}>
                   <td style={{ padding: "14px 24px" }}>
                     <span className="t-mono" style={{ fontSize: 12, color: "var(--muted)" }}>{s.day}</span>
                   </td>
@@ -331,21 +435,28 @@ function BadgeProgressCard({ onNav }) {
   );
 }
 
-function DevicesCard() {
+function DevicesCard({ onNav }) {
+  const { garminAuth } = useWorkoutStore();
+  const garminSynced = !!garminAuth;
+  const garminLast = garminAuth
+    ? new Date(garminAuth.connectedAt || garminAuth.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    : "—";
+
   const devices = [
-    { name: "Garmin fenix 7s", state: "synced", last: "12m ago" },
+    { name: "Garmin (mock)", state: garminSynced ? "synced" : "off", last: garminSynced ? garminLast : "—" },
     { name: "Strava", state: "synced", last: "today" },
     { name: "Apple watch", state: "off", last: "—" },
     { name: "Wahoo elemnt", state: "synced", last: "may 09" },
   ];
+  const activeCount = devices.filter(d => d.state === "synced").length;
   return (
     <div className="card" style={{ padding: 28 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <div>
           <span className="t-eyebrow">Devices · coverage</span>
-          <h3 className="t-h3" style={{ margin: "4px 0 0" }}>3 / 4 active</h3>
+          <h3 className="t-h3" style={{ margin: "4px 0 0" }}>{activeCount} / 4 active</h3>
         </div>
-        <button className="t-mono" style={{ fontSize: 11, color: "var(--navy)", textDecoration: "underline" }}>Manage</button>
+        <button onClick={() => onNav && onNav("workouts")} className="t-mono" style={{ fontSize: 11, color: "var(--navy)", textDecoration: "underline" }}>Manage</button>
       </div>
       <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
         {devices.map(d => (

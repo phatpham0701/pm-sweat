@@ -12,6 +12,7 @@ import { Signup } from './screens/Signup';
 import { Profile } from './screens/Profile';
 import LeaderboardsPage from './screens/LeaderboardsPage';
 import FriendsPage from './screens/FriendsPage';
+import WorkoutsPage from './screens/WorkoutsPage';
 import { useAuthStore } from './stores/authStore';
 import { Analytics } from '@vercel/analytics/react';
 import './styles.css';
@@ -27,6 +28,7 @@ const ROUTE_MAP = {
   profile: '/profile',
   leaderboards: '/leaderboards',
   friends: '/friends',
+  workouts: '/workouts',
 };
 
 const PATH_TO_KEY = {
@@ -40,6 +42,7 @@ const PATH_TO_KEY = {
   '/profile': 'profile',
   '/leaderboards': 'leaderboards',
   '/friends': 'friends',
+  '/workouts': 'workouts',
 };
 
 function AppRoutes() {
@@ -81,6 +84,9 @@ function AppRoutes() {
         } />
         <Route path="/friends" element={
           <ProtectedRoute><FriendsPage onNav={go} /></ProtectedRoute>
+        } />
+        <Route path="/workouts" element={
+          <ProtectedRoute><WorkoutsPage onNav={go} /></ProtectedRoute>
         } />
         <Route path="*" element={<Landing onNav={go} />} />
       </Routes>

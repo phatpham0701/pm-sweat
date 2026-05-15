@@ -138,6 +138,7 @@ export function ScreenJumper({ route, onNav }) {
     { id: "profile", label: "08 Profile" },
     { id: "leaderboards", label: "09 Rankings" },
     { id: "friends", label: "10 Friends" },
+    { id: "workouts", label: "11 Workouts" },
   ];
   return (
     <div className="screen-jumper" style={{
@@ -164,11 +165,12 @@ export function ScreenJumper({ route, onNav }) {
 export function AppNav({ onNav, active = "dashboard" }) {
   const { user, logout } = useAuthStore();
   const items = [
-    { id: "dashboard",    label: "Overview",  icon: "Chart",  route: "dashboard" },
-    { id: "leaderboards", label: "Rankings",  icon: "Medal",  route: "leaderboards" },
-    { id: "friends",      label: "Friends",   icon: "Users",  route: "friends" },
-    { id: "badges",       label: "Badges",    icon: "Trophy", route: "badge" },
-    { id: "rewards",      label: "Rewards",   icon: "Spark",  route: "dashboard" },
+    { id: "dashboard",    label: "Overview",  icon: "Chart",    route: "dashboard" },
+    { id: "workouts",     label: "Workouts",  icon: "Run",      route: "workouts" },
+    { id: "leaderboards", label: "Rankings",  icon: "Medal",    route: "leaderboards" },
+    { id: "friends",      label: "Friends",   icon: "Users",    route: "friends" },
+    { id: "badges",       label: "Badges",    icon: "Trophy",   route: "badge" },
+    { id: "rewards",      label: "Rewards",   icon: "Spark",    route: "dashboard" },
   ];
   return (
     <aside className="app-nav-sidebar" aria-label="Athlete navigation" style={{
