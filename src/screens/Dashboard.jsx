@@ -111,7 +111,7 @@ export default function Dashboard({ onNav }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               <BadgeProgressCard onNav={onNav} earnedBadges={badges} />
               <DevicesCard onNav={onNav} />
-              <UpcomingCard />
+              <UpcomingCard onNav={onNav} />
             </div>
           </div>
         </div>
@@ -366,7 +366,7 @@ function MatchesCard({ onNav, isMobile }) {
           <span className="t-eyebrow">Matches · live offers</span>
           <h3 className="t-h3" style={{ margin: "4px 0 0" }}>3 brand matches at your tier</h3>
         </div>
-        <button className="btn btn-sm btn-ghost">All matches <Icon.ArrowRight size={12} /></button>
+        <button className="btn btn-sm btn-ghost" onClick={() => onNav("partners")}>All matches <Icon.ArrowRight size={12} /></button>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {matches.map((m, i) => isMobile ? (
@@ -382,7 +382,7 @@ function MatchesCard({ onNav, isMobile }) {
               <div style={{ fontSize: 13, marginTop: 6 }}>{m.offer}</div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
                 <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>{m.expires}</div>
-                <button className="btn btn-sm btn-primary">Claim <Icon.ArrowRight size={12} /></button>
+                <button className="btn btn-sm btn-primary" onClick={() => onNav("partners")}>Claim <Icon.ArrowRight size={12} /></button>
               </div>
             </div>
           </div>
@@ -403,7 +403,7 @@ function MatchesCard({ onNav, isMobile }) {
               <div style={{ fontSize: 14 }}>{m.offer}</div>
               <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{m.expires}</div>
             </div>
-            <button className="btn btn-sm btn-primary">Claim <Icon.ArrowRight size={12} /></button>
+            <button className="btn btn-sm btn-primary" onClick={() => onNav("partners")}>Claim <Icon.ArrowRight size={12} /></button>
           </div>
         ))}
       </div>
@@ -525,7 +525,7 @@ function DevicesCard({ onNav }) {
   );
 }
 
-function UpcomingCard() {
+function UpcomingCard({ onNav }) {
   return (
     <div className="card" style={{ padding: 28, background: "var(--navy)", color: "white", borderColor: "var(--navy)",
       position: "relative", overflow: "hidden" }}>
@@ -547,7 +547,7 @@ function UpcomingCard() {
             <div className="t-mono" style={{ fontSize: 14, marginTop: 4 }}>cu chi · vn</div>
           </div>
         </div>
-        <button className="btn btn-sm btn-onDark" style={{ marginTop: 20, width: "100%", justifyContent: "center" }}>
+        <button className="btn btn-sm btn-onDark" onClick={() => onNav && onNav("partners")} style={{ marginTop: 20, width: "100%", justifyContent: "center" }}>
           Confirm entry <Icon.ArrowRight size={12} />
         </button>
       </div>

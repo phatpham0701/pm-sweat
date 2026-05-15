@@ -16,11 +16,29 @@ const INTENSITY_META = Object.entries(INTENSITY_COLOR).map(([key, color]) => ({
 }));
 
 function BarChart({ data, colorKey, defaultColor = 'var(--navy)' }) {
+  const [hovered, setHovered] = React.useState(null);
   const max = Math.max(...data.map(d => d.count), 1);
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 90 }}>
       {data.map((d, i) => (
-        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+        <div
+          key={i}
+          style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, position: 'relative' }}
+          onMouseEnter={() => setHovered(i)}
+          onMouseLeave={() => setHovered(null)}
+        >
+          {hovered === i && d.count > 0 && (
+            <div style={{
+              position: 'absolute', bottom: 'calc(100% + 4px)', left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'var(--navy)', color: 'white',
+              padding: '3px 8px', borderRadius: 5,
+              fontSize: 10, fontFamily: 'var(--font-mono)',
+              whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
+            }}>
+              {d.count} {d.count === 1 ? 'session' : 'sessions'}
+            </div>
+          )}
           <span style={{ fontSize: 9, fontFamily: 'var(--font-mono)', color: 'var(--muted)', minHeight: 12 }}>
             {d.count > 0 ? d.count : ''}
           </span>
@@ -31,10 +49,11 @@ function BarChart({ data, colorKey, defaultColor = 'var(--navy)' }) {
               minHeight: d.count > 0 ? 4 : 0,
               background: colorKey ? (d[colorKey] || defaultColor) : defaultColor,
               borderRadius: '3px 3px 0 0',
-              transition: 'height 500ms ease',
+              transition: 'height 500ms ease, opacity 150ms',
+              opacity: hovered === null || hovered === i ? 1 : 0.35,
             }} />
           </div>
-          <span style={{ fontSize: 9, fontFamily: 'var(--font-mono)', color: 'var(--muted)', textAlign: 'center', lineHeight: 1.2 }}>
+          <span style={{ fontSize: 9, fontFamily: 'var(--font-mono)', color: hovered === i ? 'var(--navy)' : 'var(--muted)', textAlign: 'center', lineHeight: 1.2, transition: 'color 150ms' }}>
             {d.label}
           </span>
         </div>

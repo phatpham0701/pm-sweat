@@ -76,11 +76,18 @@ export default function LeaderboardsPage({ onNav }) {
           </div>
         )}
 
-        {/* Tab bar */}
+        {/* Tab bar — sticky on scroll */}
         <div style={{
           display: 'flex', gap: 0, marginBottom: 16,
           borderBottom: '1px solid var(--hairline)',
           overflowX: 'auto',
+          position: 'sticky', top: 0,
+          background: 'white', zIndex: 10,
+          boxShadow: '0 1px 0 var(--hairline)',
+          marginLeft: isMobile ? -16 : -32,
+          marginRight: isMobile ? -16 : -32,
+          paddingLeft: isMobile ? 16 : 32,
+          paddingRight: isMobile ? 16 : 32,
         }}>
           {TABS.map(tab => (
             <button

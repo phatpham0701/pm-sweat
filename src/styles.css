@@ -80,7 +80,7 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 0; }
   border-radius: 999px; font-weight: 500; font-size: 14px; letter-spacing: -0.005em;
   transition: transform var(--t-fast), background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast);
   white-space: nowrap; }
-.btn:active { transform: translateY(1px); }
+.btn:active { transform: scale(0.98); }
 .btn-primary { background: var(--navy); color: var(--white); }
 .btn-primary:hover { background: #102345; }
 .btn-secondary { background: transparent; color: var(--navy); border: 1px solid var(--ink-12); }
@@ -257,6 +257,70 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 0; }
 }
 .tier-badge:hover .badge-tooltip { opacity: 1; }
 
+/* ─── Phase 10: UI/UX Polish ─────────────────────────────── */
+
+/* Focus ring — visible keyboard navigation */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Page fade-in — applied to .app-main-content on every screen */
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.app-main-content {
+  animation: pageFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Button disabled state */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Skip navigation link — keyboard accessibility */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  padding: 10px 20px;
+  background: var(--navy);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 9999;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+  transition: top 150ms;
+}
+.skip-nav:focus {
+  top: 0;
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+}
+
+/* Loading spinner utility */
+@keyframes spinCW { to { transform: rotate(360deg); } }
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spinCW 600ms linear infinite;
+  flex-shrink: 0;
+}
+.spinner-sm { width: 10px; height: 10px; border-width: 1.5px; }
+
 /* Accessibility: respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .tier-badge--glow,
@@ -265,4 +329,7 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 0; }
     -webkit-animation: none;
   }
   .tier-badge--glow { box-shadow: 0 0 12px rgba(99, 102, 241, 0.3); }
+  .app-main-content { animation: none; }
+  .fade-up { animation: none; opacity: 1; transform: none; }
+  .spinner { animation: none; }
 }

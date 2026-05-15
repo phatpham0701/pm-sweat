@@ -207,6 +207,8 @@ export function AppNav({ onNav, active = "dashboard" }) {
               display: "flex", alignItems: "center", gap: 10, height: 36, padding: "0 10px",
               borderRadius: 8, color: isActive ? "var(--navy)" : "var(--muted)",
               background: isActive ? "var(--ink-04)" : "transparent",
+              fontWeight: isActive ? 600 : 400,
+              boxShadow: isActive ? "inset 2px 0 0 var(--navy)" : "none",
               fontSize: 14, transition: "all 150ms",
             }}
             onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "var(--ink-04)"; }}

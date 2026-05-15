@@ -2,7 +2,7 @@ import React from 'react';
 import WorkoutCard from './WorkoutCard';
 import { Icon } from './brand';
 
-export default function WorkoutList({ workouts, onSelect, emptyMessage }) {
+export default function WorkoutList({ workouts, onSelect, emptyMessage, onCta, ctaLabel }) {
   if (!workouts || workouts.length === 0) {
     return (
       <div style={{
@@ -11,9 +11,18 @@ export default function WorkoutList({ workouts, onSelect, emptyMessage }) {
         color: 'var(--muted)',
       }}>
         <Icon.Dumbbell size={32} color="var(--ink-12)" />
-        <div style={{ marginTop: 12, fontSize: 14 }}>
+        <div style={{ marginTop: 12, fontSize: 14, fontWeight: 500, color: 'var(--navy)' }}>
           {emptyMessage || 'No workouts yet. Connect Garmin or add one manually.'}
         </div>
+        {onCta && (
+          <button
+            onClick={onCta}
+            className="btn btn-secondary btn-sm"
+            style={{ marginTop: 16 }}
+          >
+            {ctaLabel || 'View all'}
+          </button>
+        )}
       </div>
     );
   }

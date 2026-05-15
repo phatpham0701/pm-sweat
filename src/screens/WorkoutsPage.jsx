@@ -20,6 +20,8 @@ const FILTERS = [
   { id: 'swimming', label: 'Swimming' },
 ];
 
+const STREAK_MILESTONES = [7, 14, 21, 30, 60, 90];
+
 export default function WorkoutsPage({ onNav }) {
   const isMobile = useIsMobile();
   const { user } = useAuthStore();
@@ -36,8 +38,6 @@ export default function WorkoutsPage({ onNav }) {
   const [showManual, setShowManual] = useState(false);
   const [connectMsg, setConnectMsg] = useState('');
   const [syncMsg, setSyncMsg] = useState('');
-
-  const STREAK_MILESTONES = [7, 14, 21, 30, 60, 90];
 
   useEffect(() => {
     if (user?.id) {
@@ -117,11 +117,13 @@ export default function WorkoutsPage({ onNav }) {
           <div style={{ display: 'flex', gap: 10 }}>
             {isConnected ? (
               <button className="btn btn-sm btn-secondary" onClick={handleSync} disabled={isLoading}>
-                <Icon.Verify size={14} /> {isLoading ? 'Syncing…' : 'Sync Garmin'}
+                {isLoading ? <span className="spinner spinner-sm" /> : <Icon.Verify size={14} />}
+                {isLoading ? 'Syncing…' : 'Sync Garmin'}
               </button>
             ) : (
               <button className="btn btn-sm btn-secondary" onClick={handleConnectGarmin} disabled={isLoading}>
-                <Icon.Run size={14} /> {isLoading ? 'Connecting…' : 'Connect Garmin'}
+                {isLoading ? <span className="spinner spinner-sm" /> : <Icon.Run size={14} />}
+                {isLoading ? 'Connecting…' : 'Connect Garmin'}
               </button>
             )}
             <button className="btn btn-sm btn-primary" onClick={() => setShowManual(true)}>
@@ -133,11 +135,13 @@ export default function WorkoutsPage({ onNav }) {
         <div style={{ padding: isMobile ? 16 : 32 }}>
           {/* Status messages */}
           {(connectMsg || syncMsg) && (
-            <div style={{
+            <div className="fade-up" style={{
               marginBottom: 20, padding: '12px 16px', borderRadius: 10,
               background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)',
               color: 'var(--mint)', fontSize: 13, fontFamily: 'var(--font-mono)',
+              display: 'flex', alignItems: 'center', gap: 8,
             }}>
+              <Icon.CheckCircle size={16} color="var(--mint)" />
               {connectMsg || syncMsg}
             </div>
           )}
@@ -166,7 +170,8 @@ export default function WorkoutsPage({ onNav }) {
                 Instantly generate 30 days of realistic workout data for demo
               </div>
               <button className="btn btn-primary" onClick={handleConnectGarmin} disabled={isLoading}>
-                <Icon.Run size={14} /> {isLoading ? 'Connecting…' : 'Connect Garmin (Mock)'}
+                {isLoading ? <span className="spinner spinner-sm" /> : <Icon.Run size={14} />}
+                {isLoading ? 'Connecting…' : 'Connect Garmin (Mock)'}
               </button>
             </div>
           )}
@@ -210,9 +215,11 @@ export default function WorkoutsPage({ onNav }) {
             onSelect={setSelectedWorkout}
             emptyMessage={
               filter !== 'all'
-                ? `No ${filter} workouts yet.`
+                ? `No ${filter} workouts logged yet.`
                 : 'No workouts yet. Connect Garmin or add one manually.'
             }
+            onCta={filter !== 'all' ? () => setFilter('all') : undefined}
+            ctaLabel={filter !== 'all' ? 'Show all workouts' : undefined}
           />
         </div>
       </main>

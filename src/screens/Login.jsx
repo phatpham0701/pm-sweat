@@ -23,6 +23,9 @@ const field = {
   background: 'white',
 };
 
+const DEMO_EMAIL = 'demo@pmsweat.app';
+const DEMO_PASS = 'Demo1234!';
+
 export function Login() {
   const navigate = useNavigate();
   const { login, isLoading, error, isLoggedIn, clearError } = useAuthStore();
@@ -31,6 +34,26 @@ export function Login() {
   });
 
   if (isLoggedIn) return <Navigate to="/dashboard" replace />;
+
+  const fillDemo = async () => {
+    clearError();
+    const users = JSON.parse(localStorage.getItem('pmsweat_users') || '{}');
+    if (!users[DEMO_EMAIL]) {
+      users[DEMO_EMAIL] = {
+        id: 'demo-user-001',
+        email: DEMO_EMAIL,
+        name: 'Alex Chen',
+        handle: 'alexchen',
+        age: 28,
+        city: 'Ho Chi Minh City',
+        password: btoa(DEMO_PASS),
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem('pmsweat_users', JSON.stringify(users));
+    }
+    await login(DEMO_EMAIL, DEMO_PASS);
+    if (useAuthStore.getState().isLoggedIn) navigate('/dashboard');
+  };
 
   const onSubmit = async (data) => {
     clearError();
@@ -76,7 +99,22 @@ export function Login() {
           </button>
         </form>
 
-        <p style={{ marginTop: 24, textAlign: 'center', fontSize: 14, color: 'var(--muted)' }}>
+        <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--hairline)' }}>
+          <button
+            type="button"
+            onClick={fillDemo}
+            disabled={isLoading}
+            className="btn btn-secondary"
+            style={{ width: '100%', justifyContent: 'center', height: 40, fontSize: 13 }}
+          >
+            Try demo account
+          </button>
+          <p className="t-small" style={{ textAlign: 'center', marginTop: 8, color: 'var(--muted)' }}>
+            Instant access · no signup needed
+          </p>
+        </div>
+
+        <p style={{ marginTop: 16, textAlign: 'center', fontSize: 14, color: 'var(--muted)' }}>
           Don't have an account?{' '}
           <Link to="/signup" style={{ color: 'var(--indigo)', fontWeight: 500 }}>Create account</Link>
         </p>
