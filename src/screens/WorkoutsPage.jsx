@@ -6,6 +6,8 @@ import { useAuthStore } from '../stores/authStore';
 import { useWorkoutStore } from '../stores/workoutStore';
 import { useNotificationStore } from '../stores/notificationStore';
 import { mockAuthService } from '../services/mockAuthService';
+import { checkAndAwardBadges } from '../services/badgeService';
+import { useBadgeStore } from '../stores/badgeStore';
 import WorkoutList from '../components/WorkoutList';
 import WorkoutDetail from '../components/WorkoutDetail';
 import ManualWorkoutForm from '../components/ManualWorkoutForm';
@@ -30,6 +32,7 @@ export default function WorkoutsPage({ onNav }) {
 
   const { addNotification, loadNotifications, notifications } = useNotificationStore();
 
+  const { loadBadges } = useBadgeStore();
   const [showManual, setShowManual] = useState(false);
   const [connectMsg, setConnectMsg] = useState('');
   const [syncMsg, setSyncMsg] = useState('');
@@ -40,8 +43,9 @@ export default function WorkoutsPage({ onNav }) {
     if (user?.id) {
       loadUserWorkouts(user.id);
       loadNotifications(user.id);
+      loadBadges(user.id);
     }
-  }, [user?.id, loadUserWorkouts, loadNotifications]);
+  }, [user?.id, loadUserWorkouts, loadNotifications, loadBadges]);
 
   const isConnected = !!garminAuth;
   const filtered = getFilteredWorkouts();
@@ -56,6 +60,7 @@ export default function WorkoutsPage({ onNav }) {
         setGarminAuth(user.id, result.token);
         loadUserWorkouts(user.id);
         setConnectMsg(`Connected! ${result.workoutsGenerated} workouts generated · ${result.creditsEarned} sv earned`);
+        checkAndAwardBadges(user.id);
       }
     } finally {
       setLoading(false);
@@ -88,6 +93,7 @@ export default function WorkoutsPage({ onNav }) {
     addNotification(user.id, 'WORKOUT_LOGGED', { credits: workout.sweat_credits_earned });
     const statsAfter = useWorkoutStore.getState().getStats();
     fireStreakNotification(statsAfter);
+    checkAndAwardBadges(user.id);
     setShowManual(false);
   }
 

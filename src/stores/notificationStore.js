@@ -26,6 +26,7 @@ const TEMPLATES = {
   GOAL_COMPLETED:    (d) => ({ title: 'Goal Achieved!',       message: `You completed "${d.goalTitle}"!`,                                 priority: 'high' }),
   STREAK_MILESTONE:  (d) => ({ title: `${d.days}-Day Streak!`, message: `Your multiplier is now ${d.multiplier}x — keep it up!`,          priority: 'medium' }),
   STREAK_WARNING:    ()  => ({ title: 'Streak at Risk',       message: 'Work out today to keep your streak alive!',                       priority: 'medium' }),
+  BADGE_EARNED:      (d) => ({ title: `${d.icon} Badge Earned!`, message: `You unlocked "${d.name}". Check your badge collection!`,       priority: 'high' }),
 };
 
 export const useNotificationStore = create((set, get) => ({

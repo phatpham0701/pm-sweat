@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppNav } from '../components/chrome';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { useFriendship } from '../hooks/useFriendship';
 import { useActivityFeed } from '../hooks/useActivityFeed';
+import { useAuthStore } from '../stores/authStore';
+import { useBadgeStore } from '../stores/badgeStore';
+import { checkAndAwardBadges } from '../services/badgeService';
 import FriendCard from '../components/friends/FriendCard';
 import FriendSearch from '../components/friends/FriendSearch';
 import ActivityFeed from '../components/feed/ActivityFeed';
@@ -19,11 +22,17 @@ const SECTIONS = [
 export default function FriendsPage({ onNav }) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { user } = useAuthStore();
+  const { loadBadges } = useBadgeStore();
   const [section, setSection] = useState('friends');
   const [selectedFriend, setSelectedFriend] = useState(null);
 
   const { entries, userEntry } = useLeaderboard('global');
   const { friends, addFriend, removeFriend, isFriend } = useFriendship();
+
+  useEffect(() => {
+    if (user?.id) loadBadges(user.id);
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const { activities } = useActivityFeed();
 
   const handleNav = (key) => {
@@ -32,7 +41,12 @@ export default function FriendsPage({ onNav }) {
   };
 
   const handleToggle = (athlete) => {
-    isFriend(athlete.id) ? removeFriend(athlete.id) : addFriend(athlete.id);
+    if (isFriend(athlete.id)) {
+      removeFriend(athlete.id);
+    } else {
+      addFriend(athlete.id);
+      if (user?.id) checkAndAwardBadges(user.id);
+    }
   };
 
   return (

@@ -9,6 +9,8 @@ import { useAuthStore } from '../stores/authStore';
 import { useGoalsStore } from '../stores/goalsStore';
 import { useWorkoutStore } from '../stores/workoutStore';
 import { useNotificationStore } from '../stores/notificationStore';
+import { useBadgeStore } from '../stores/badgeStore';
+import { checkAndAwardBadges } from '../services/badgeService';
 import GoalCard from '../components/GoalCard';
 
 const schema = z.object({
@@ -49,6 +51,7 @@ export default function GoalsPage({ onNav }) {
   const { goals, loadGoals, addGoal, deleteGoal, updateProgress } = useGoalsStore();
   const { workouts } = useWorkoutStore();
   const { addNotification } = useNotificationStore();
+  const { loadBadges } = useBadgeStore();
   const [showForm, setShowForm] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
@@ -57,8 +60,11 @@ export default function GoalsPage({ onNav }) {
   });
 
   useEffect(() => {
-    if (user?.id) loadGoals(user.id);
-  }, [user?.id, loadGoals]);
+    if (user?.id) {
+      loadGoals(user.id);
+      loadBadges(user.id);
+    }
+  }, [user?.id, loadGoals, loadBadges]);
 
   useEffect(() => {
     if (!user?.id || !workouts.length) return;
@@ -66,6 +72,9 @@ export default function GoalsPage({ onNav }) {
     newlyCompleted.forEach(goal => {
       addNotification(user.id, 'GOAL_COMPLETED', { goalTitle: goal.title });
     });
+    if (newlyCompleted.length > 0) {
+      checkAndAwardBadges(user.id);
+    }
   }, [user?.id, workouts.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function onSubmit(data) {

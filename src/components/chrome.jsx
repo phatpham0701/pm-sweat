@@ -121,7 +121,7 @@ export function Footer() {
           justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center",
           paddingTop: 24, borderTop: "1px solid var(--hairline)" }}>
         <span className="t-small">© 2026 PM Sweat Labs · Perfect Match Sweat</span>
-        <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>v0.9.4 · build 2026.05.14</span>
+        <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>v1.0.0 · build 2026.05.15</span>
       </div>
     </footer>
   );
@@ -143,6 +143,7 @@ export function ScreenJumper({ route, onNav }) {
     { id: "insights",      label: "12 Insights" },
     { id: "goals",         label: "13 Goals" },
     { id: "notifications", label: "14 Alerts" },
+    { id: "badges",        label: "15 Badges" },
   ];
   return (
     <div className="screen-jumper" style={{
@@ -183,7 +184,7 @@ export function AppNav({ onNav, active = "dashboard" }) {
     { id: "goals",        label: "Goals",     icon: "Target",   route: "goals" },
     { id: "leaderboards", label: "Rankings",  icon: "Medal",    route: "leaderboards" },
     { id: "friends",      label: "Friends",   icon: "Users",    route: "friends" },
-    { id: "badges",       label: "Badges",    icon: "Trophy",   route: "badge" },
+    { id: "badges",       label: "Badges",    icon: "Trophy",   route: "badges" },
     { id: "rewards",      label: "Rewards",   icon: "Spark",    route: "dashboard" },
   ];
   return (

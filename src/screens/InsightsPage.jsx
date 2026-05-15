@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { AppNav } from '../components/chrome';
 import { Icon } from '../components/brand';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useWorkoutStore } from '../stores/workoutStore';
+import { useAuthStore } from '../stores/authStore';
+import { useBadgeStore } from '../stores/badgeStore';
+import { awardExplorerBadge } from '../services/badgeService';
 import StreakWidget from '../components/StreakWidget';
 import { ACTIVITY_META, INTENSITY_COLOR } from '../constants/activityMeta';
 
@@ -59,7 +62,16 @@ function StatCard({ label, value, icon }) {
 
 export default function InsightsPage({ onNav }) {
   const isMobile = useIsMobile();
+  const { user } = useAuthStore();
+  const { loadBadges } = useBadgeStore();
   const { workouts, getStats } = useWorkoutStore();
+
+  useEffect(() => {
+    if (user?.id) {
+      loadBadges(user.id);
+      awardExplorerBadge(user.id, 'INSIGHT_SEEKER');
+    }
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Hooks must run unconditionally — compute even if empty (returns zeroes/empty arrays)
   const stats = getStats();

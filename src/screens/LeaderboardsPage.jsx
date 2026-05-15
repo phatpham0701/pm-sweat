@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppNav } from '../components/chrome';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { useFriendship } from '../hooks/useFriendship';
+import { useAuthStore } from '../stores/authStore';
+import { useBadgeStore } from '../stores/badgeStore';
+import { awardExplorerBadge } from '../services/badgeService';
 import RankBadge from '../components/leaderboards/RankBadge';
 import LeaderboardTable from '../components/leaderboards/LeaderboardTable';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -19,7 +22,16 @@ const TABS = [
 export default function LeaderboardsPage({ onNav }) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { user } = useAuthStore();
+  const { loadBadges } = useBadgeStore();
   const [activeTab, setActiveTab] = useState('global');
+
+  useEffect(() => {
+    if (user?.id) {
+      loadBadges(user.id);
+      awardExplorerBadge(user.id, 'LEADERBOARD_PIONEER');
+    }
+  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { entries, userEntry, loading, error } = useLeaderboard(activeTab);
   const { friendIds, addFriend, removeFriend, isFriend } = useFriendship();

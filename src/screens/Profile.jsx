@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '../stores/authStore';
+import { useBadgeStore } from '../stores/badgeStore';
 import { Wordmark } from '../components/brand';
 import RankBadge from '../components/leaderboards/RankBadge';
+import BadgeDisplay from '../components/BadgeDisplay';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 
 const field = {
@@ -21,8 +23,13 @@ const field = {
 export function Profile() {
   const navigate = useNavigate();
   const { user, updateProfile, logout } = useAuthStore();
+  const { badges, loadBadges } = useBadgeStore();
   const [saved, setSaved] = useState(false);
   const { userEntry } = useLeaderboard('global');
+
+  useEffect(() => {
+    if (user?.id) loadBadges(user.id);
+  }, [user?.id, loadBadges]);
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -118,6 +125,33 @@ export function Profile() {
               Save changes
             </button>
           </form>
+
+          {/* Badge showcase */}
+          {badges.length > 0 && (
+            <>
+              <hr style={{ margin: '32px 0' }} />
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <div className="t-eyebrow">Achievement Badges</div>
+                  <button
+                    onClick={() => navigate('/badges')}
+                    className="btn btn-ghost btn-sm"
+                    style={{ fontSize: 12 }}
+                  >
+                    View all ({badges.length})
+                  </button>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {[...badges]
+                    .sort((a, b) => new Date(b.earnedAt) - new Date(a.earnedAt))
+                    .slice(0, 8)
+                    .map(b => (
+                      <BadgeDisplay key={b.id} badgeId={b.id} earned earnedAt={b.earnedAt} size="md" />
+                    ))}
+                </div>
+              </div>
+            </>
+          )}
 
           <hr style={{ margin: '32px 0' }} />
 

@@ -16,8 +16,10 @@ import WorkoutsPage from './screens/WorkoutsPage';
 import InsightsPage from './screens/InsightsPage';
 import GoalsPage from './screens/GoalsPage';
 import NotificationCenterPage from './screens/NotificationCenterPage';
+import BadgesPage from './screens/BadgesPage';
 import { useAuthStore } from './stores/authStore';
 import { Analytics } from '@vercel/analytics/react';
+import ErrorBoundary from './components/ErrorBoundary';
 import './styles.css';
 
 const ROUTE_MAP = {
@@ -25,6 +27,7 @@ const ROUTE_MAP = {
   onboarding: '/onboarding',
   dashboard: '/dashboard',
   badge: '/badge',
+  badges: '/badges',
   partners: '/partners',
   login: '/login',
   signup: '/signup',
@@ -42,6 +45,7 @@ const PATH_TO_KEY = {
   '/onboarding': 'onboarding',
   '/dashboard': 'dashboard',
   '/badge': 'badge',
+  '/badges': 'badges',
   '/partners': 'partners',
   '/login': 'login',
   '/signup': 'signup',
@@ -106,6 +110,9 @@ function AppRoutes() {
         <Route path="/notifications" element={
           <ProtectedRoute><NotificationCenterPage onNav={go} /></ProtectedRoute>
         } />
+        <Route path="/badges" element={
+          <ProtectedRoute><BadgesPage onNav={go} /></ProtectedRoute>
+        } />
         <Route path="*" element={<Landing onNav={go} />} />
       </Routes>
     </>
@@ -120,10 +127,12 @@ function App() {
   }, [restoreSession]);
 
   return (
-    <BrowserRouter>
-      <AppRoutes />
-      <Analytics />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppRoutes />
+        <Analytics />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

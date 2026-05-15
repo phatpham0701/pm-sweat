@@ -4,6 +4,8 @@ import { AppNav } from '../components/chrome';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useAuthStore } from '../stores/authStore';
 import { useWorkoutStore } from '../stores/workoutStore';
+import { useBadgeStore } from '../stores/badgeStore';
+import BadgeDisplay from '../components/BadgeDisplay';
 import ManualWorkoutForm from '../components/ManualWorkoutForm';
 import WorkoutDetail from '../components/WorkoutDetail';
 
@@ -30,11 +32,15 @@ export default function Dashboard({ onNav }) {
   const { user } = useAuthStore();
   const firstName = user?.name?.split(' ')[0] || 'Athlete';
   const { loadUserWorkouts, workouts, getStats, setSelectedWorkout, selectedWorkout } = useWorkoutStore();
+  const { badges, loadBadges } = useBadgeStore();
   const [showManual, setShowManual] = useState(false);
 
   useEffect(() => {
-    if (user?.id) loadUserWorkouts(user.id);
-  }, [user?.id, loadUserWorkouts]);
+    if (user?.id) {
+      loadUserWorkouts(user.id);
+      loadBadges(user.id);
+    }
+  }, [user?.id, loadUserWorkouts, loadBadges]);
 
   const stats = getStats();
   const recentWorkouts = workouts.slice(0, 3);
@@ -69,7 +75,7 @@ export default function Dashboard({ onNav }) {
 
         <div style={{ padding: isMobile ? 16 : 32 }}>
           {/* Workout stats strip */}
-          {stats.totalWorkouts > 0 && (
+          {stats.totalWorkouts > 0 ? (
             <div style={{
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)",
@@ -80,6 +86,20 @@ export default function Dashboard({ onNav }) {
               <DashStatCard icon="Chart" label="Avg / Week" value={stats.avgPerWeek} onClick={() => onNav("workouts")} />
               <DashStatCard icon="Bolt" label="Streak" value={`${stats.currentStreak}d`} onClick={() => onNav("workouts")} />
             </div>
+          ) : (
+            <div className="card" style={{
+              padding: "24px 28px", marginBottom: 24,
+              display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+              background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.15)",
+            }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>Start tracking your workouts</div>
+                <div className="t-small" style={{ color: "var(--muted)" }}>Connect Garmin or log your first session to earn sweat credits.</div>
+              </div>
+              <button className="btn btn-sm btn-primary" onClick={() => onNav("workouts")} style={{ flexShrink: 0 }}>
+                <Icon.Plus size={14} /> Log workout
+              </button>
+            </div>
           )}
 
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.55fr 1fr", gap: isMobile ? 16 : 24 }}>
@@ -89,7 +109,7 @@ export default function Dashboard({ onNav }) {
               <MatchesCard onNav={onNav} isMobile={isMobile} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-              <BadgeProgressCard onNav={onNav} />
+              <BadgeProgressCard onNav={onNav} earnedBadges={badges} />
               <DevicesCard onNav={onNav} />
               <UpcomingCard />
             </div>
@@ -391,7 +411,11 @@ function MatchesCard({ onNav, isMobile }) {
   );
 }
 
-function BadgeProgressCard({ onNav }) {
+function BadgeProgressCard({ onNav, earnedBadges = [] }) {
+  const recentBadges = [...earnedBadges]
+    .sort((a, b) => new Date(b.earnedAt) - new Date(a.earnedAt))
+    .slice(0, 5);
+
   return (
     <div className="card" style={{ padding: 28 }}>
       <span className="t-eyebrow">Badge ladder</span>
@@ -434,10 +458,29 @@ function BadgeProgressCard({ onNav }) {
           </div>
         ))}
       </div>
-      <button onClick={() => onNav("badge")} className="btn btn-sm btn-secondary"
-        style={{ width: "100%", justifyContent: "center", marginTop: 16 }}>
-        Inspect tier 3 badge <Icon.ArrowRight size={12} />
-      </button>
+
+      {/* Achievement badges strip */}
+      {recentBadges.length > 0 && (
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--hairline)" }}>
+          <div className="t-eyebrow" style={{ marginBottom: 10 }}>Recent achievements</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {recentBadges.map(b => (
+              <BadgeDisplay key={b.id} badgeId={b.id} earned earnedAt={b.earnedAt} size="sm" />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+        <button onClick={() => onNav("badge")} className="btn btn-sm btn-secondary"
+          style={{ flex: 1, justifyContent: "center" }}>
+          Tier details <Icon.ArrowRight size={12} />
+        </button>
+        <button onClick={() => onNav("badges")} className="btn btn-sm btn-secondary"
+          style={{ flex: 1, justifyContent: "center" }}>
+          All badges <Icon.Trophy size={12} />
+        </button>
+      </div>
     </div>
   );
 }
