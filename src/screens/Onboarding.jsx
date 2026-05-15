@@ -71,7 +71,7 @@ export default function Onboarding({ onNav }) {
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               {step === 2 && attestStage < 4 && (
                 <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.12em",
-                  textTransform: "uppercase" }}>Hold tight · attestation in progress</span>
+                  textTransform: "uppercase" }}>Hold tight · demo verification in progress</span>
               )}
               <button
                 type={step === 0 ? "submit" : "button"}
@@ -80,7 +80,7 @@ export default function Onboarding({ onNav }) {
                 className="btn btn-primary"
                 disabled={step === 2 && attestStage < 4}
                 style={{ opacity: (step === 2 && attestStage < 4) ? 0.4 : 1 }}>
-                {step === 1 ? "Run first attestation" : step === 2 ? "Mint passport" : "Continue"}
+                {step === 1 ? "Run demo verification" : step === 2 ? "Create Sweat Pass" : "Continue"}
                 <Icon.ArrowRight size={14} />
               </button>
             </div>
@@ -193,10 +193,10 @@ function ProfileStep({ profile, onNext }) {
 
 function DevicesStep({ devices, setDevices }) {
   const list = [
-    { id: "garmin", name: "Garmin", desc: "Connect IQ · all wearables", sigs: "ed25519 · hardware key" },
-    { id: "apple", name: "Apple Health", desc: "Watch · iPhone HealthKit", sigs: "Secure Enclave" },
-    { id: "strava", name: "Strava", desc: "Activity timeline · 90 days history", sigs: "OAuth + content hash" },
-    { id: "whoop", name: "Whoop", desc: "Strain · recovery · HRV", sigs: "TLS + device id" },
+    { id: "garmin", name: "Garmin", desc: "Connect IQ · all wearables", sigs: "source-connected signal" },
+    { id: "apple", name: "Apple Health", desc: "Watch · iPhone HealthKit", sigs: "privacy-safe summary" },
+    { id: "strava", name: "Strava", desc: "Activity timeline · 90 days history", sigs: "source-connected signal" },
+    { id: "whoop", name: "Whoop", desc: "Strain · recovery · HRV", sigs: "consent-based eligibility" },
     { id: "wahoo", name: "Wahoo", desc: "ELEMNT bike computers · TICKR HR", sigs: "ANT+ · paired" },
   ];
   const connected = Object.values(devices).filter(Boolean).length;
@@ -208,7 +208,7 @@ function DevicesStep({ devices, setDevices }) {
         Link the gear that already tracks you.
       </h1>
       <p style={{ color: "var(--muted)", maxWidth: 560, marginTop: 0 }}>
-        At least one device with hardware attestation is required. We never store raw biometric data — only signed effort signals.
+        At least one source connection is selected for this demo. The flow is designed around privacy-safe eligibility, not raw workout disclosure.
       </p>
 
       <div style={{ marginTop: 32, display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -275,25 +275,25 @@ function AttestStep({ stage }) {
   const stages = [
     { k: "Reading device", v: "garmin fenix 7s · paired" },
     { k: "Capturing session", v: "morning run · 10.4 km · zone 3" },
-    { k: "Signing locally", v: "ed25519 · 0x7a3f…3c1f" },
-    { k: "Anchoring proof", v: "submitted · waiting confirm" },
-    { k: "Attestation complete", v: "valid · sv +48" },
+    { k: "Preparing summary", v: "verified-source-ready" },
+    { k: "Checking eligibility", v: "sample partner-ready summary" },
+    { k: "Verification complete", v: "demo summary · sv +48" },
   ];
 
   return (
     <div className="fade-up">
-      <span className="t-eyebrow">03 · Attestation</span>
+      <span className="t-eyebrow">03 · Demo verification</span>
       <h1 className="t-h1" style={{ marginTop: 12, marginBottom: 12, maxWidth: 600 }}>
-        Your first proof artifact.
+        Your first verification summary.
       </h1>
       <p style={{ color: "var(--muted)", maxWidth: 560, marginTop: 0 }}>
-        We pulled a recent session from your linked device, signed it with the device's hardware key, and anchored a verifiable proof. None of the raw stream leaves your phone.
+        Demo verification summarizes selected workout signals from your connected source. Real source integrations are planned, and raw health details are not shown to partners in this demo.
       </p>
 
       <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 24 }}>
         <div className="card" style={{ padding: 28 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-            <span className="t-eyebrow">Attestation pipeline</span>
+            <span className="t-eyebrow">Demo verification flow</span>
             <span className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>{Math.min(stage + 1, 5)}/5</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -333,7 +333,7 @@ function AttestStep({ stage }) {
           <div className="halo" style={{ inset: "-30% -30% auto auto", width: "120%", height: "120%" }} />
           <div style={{ position: "relative" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 24 }}>
-              <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", letterSpacing: "0.12em", textTransform: "uppercase" }}>Proof · v1</span>
+              <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", letterSpacing: "0.12em", textTransform: "uppercase" }}>Verification demo · v1</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 {stage >= 4 ? <>
                   <Icon.CheckCircle size={14} color="var(--mint)" />
@@ -347,16 +347,16 @@ function AttestStep({ stage }) {
             </div>
             <div className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", lineHeight: 1.8 }}>
               {`{`}<br/>
-              &nbsp;&nbsp;"id": "<span style={{ color: "var(--signal)" }}>0x7a3f…3c1f</span>",<br/>
+              &nbsp;&nbsp;"id": "<span style={{ color: "var(--signal)" }}>demo-7s-summary</span>",<br/>
               &nbsp;&nbsp;"athlete": "<span style={{ color: "var(--signal)" }}>minhsweat</span>",<br/>
               &nbsp;&nbsp;"session": {`{`}<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;"kind": "<span style={{ color: "var(--signal)" }}>run</span>",<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;"dist_m": <span style={{ color: "var(--mint)" }}>10412</span>,<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;"avg_hr": <span style={{ color: "var(--mint)" }}>162</span>,<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;"effort_score": <span style={{ color: "var(--mint)" }}>82</span>,<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;"zone": <span style={{ color: "var(--mint)" }}>3</span><br/>
               &nbsp;&nbsp;{`}`},<br/>
               &nbsp;&nbsp;"device": "<span style={{ color: "var(--signal)" }}>fenix-7s</span>",<br/>
-              &nbsp;&nbsp;"sig": "<span style={{ color: "var(--signal)" }}>ed25519 · {stage >= 2 ? "valid" : "pending"}</span>",<br/>
+              &nbsp;&nbsp;"verification": "<span style={{ color: "var(--signal)" }}>{stage >= 2 ? "verified-source-ready" : "pending"}</span>",<br/>
               &nbsp;&nbsp;"sv": <span style={{ color: "var(--mint)" }}>{stage >= 4 ? "+48" : "—"}</span><br/>
               {`}`}
             </div>
@@ -382,7 +382,7 @@ function PassportStep({ profile, onNav }) {
         }}>PM Sweat.</span>
       </h1>
       <p style={{ color: "var(--muted)", marginTop: 20, maxWidth: 520, marginInline: "auto" }}>
-        Your passport is live. Sweat Value will compound as you train. We'll notify you when a brand match reaches your tier.
+        Your Sweat Pass is ready. Sweat Value will compound as you train. We'll notify you when a sample brand match reaches your tier.
       </p>
 
       <div style={{
@@ -413,7 +413,7 @@ function PassportStep({ profile, onNav }) {
           </div>
           <div style={{ marginTop: 16, display: "flex", justifyContent: "space-between",
             paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-            <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>id · 0x7a3f…3c1f</span>
+            <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>summary · demo-7s</span>
             <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>since may 2026</span>
           </div>
         </div>

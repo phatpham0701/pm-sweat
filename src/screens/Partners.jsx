@@ -44,7 +44,7 @@ export default function Partners({ onNav }) {
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.10)", padding: "20px 0",
           fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(255,255,255,0.5)" }}>
           <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ letterSpacing: "0.16em", textTransform: "uppercase" }}>17 live partners · sea region</span>
+            <span style={{ letterSpacing: "0.16em", textTransform: "uppercase" }}>Sample partner network · sea region</span>
             <div style={{ display: "flex", gap: 36 }}>
               {["ORIGIN SUPPS", "SAIGON TRAIL", "SALT & LIME", "ATELIER RUN", "NORD KIT", "VELO COFFEE", "HYDRA LAB"].map(b => (
                 <span key={b}>{b}</span>
@@ -63,8 +63,8 @@ export default function Partners({ onNav }) {
         </div>
         <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 12 : 16 }}>
           {[
-            { k: "01", t: "Verified, not claimed", b: "Every athlete you reach has hardware-attested proof of recent effort. No filled-in surveys, no lookalike segments.", icon: "Verify" },
-            { k: "02", t: "Targeted by tier and discipline", b: "Match your offer to athletes by verified tier, primary discipline, and zone profile. No raw biometric ever leaves the device.", icon: "Map" },
+            { k: "01", t: "Verified, not claimed", b: "Every athlete you reach is modeled around source-connected recent effort. No filled-in surveys, no lookalike segments.", icon: "Verify" },
+            { k: "02", t: "Targeted by tier and discipline", b: "Match your offer to athletes by verified tier, primary discipline, and zone profile. The demo is designed around privacy-safe eligibility, not raw workout disclosure.", icon: "Map" },
             { k: "03", t: "Compensated, not extracted", b: "You pay only for accepted matches. Athletes hold the passport — they choose to engage. We never resell their data.", icon: "Shield" },
           ].map(c => {
             const IC = Icon[c.icon];
@@ -96,12 +96,12 @@ export default function Partners({ onNav }) {
                 Build an audience that's already moving.
               </h2>
               <p style={{ color: "var(--muted)", marginTop: 20, maxWidth: 460 }}>
-                Combine tier, discipline, region, and effort signals. We surface the verified pool size in real time. No raw user data is exposed — only counts.
+                Combine tier, discipline, region, and selected workout signals. This demo shows eligibility counts and campaign fit, not raw workout exports.
               </p>
               <ul style={{ marginTop: 28, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 14 }}>
                 {[
-                  ["Pool size, live", "Counts update as you tune filters"],
-                  ["No raw export", "Targeting happens server-side, against signed proofs"],
+                  ["Sample pool size", "Counts update as you tune filters"],
+                  ["No raw export", "Targeting uses consent-based eligibility signals"],
                   ["Athlete opt-in per offer", "Every match requires explicit accept"],
                 ].map(([k, v]) => (
                   <li key={k} style={{ display: "flex", gap: 14 }}>
@@ -171,12 +171,12 @@ export default function Partners({ onNav }) {
           display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: isMobile ? 32 : 56, alignItems: "center",
         }}>
           <div>
-            <span className="t-eyebrow">Case · origin supps</span>
+            <span className="t-eyebrow">Sample pilot concept · origin supps</span>
             <h2 className="t-h2" style={{ marginTop: 12, marginBottom: 16, maxWidth: 480 }}>
               "We stopped buying impressions. We started funding athletes who actually train."
             </h2>
             <p style={{ color: "var(--muted)", marginTop: 0, maxWidth: 480 }}>
-              Origin Supps replaced their lookalike Meta spend with PM Sweat tier 3 matches. CAC dropped 62%, repeat purchase doubled, and brand trust scores hit category-best in three months.
+              Origin Supps is an example campaign simulation for pilot planning, showing how a nutrition brand could shift spend toward verified tier 3 athlete matches.
             </p>
             <div style={{ marginTop: 24, display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{ width: 36, height: 36, borderRadius: 999, background: "var(--grad-momentum)",
@@ -184,13 +184,13 @@ export default function Partners({ onNav }) {
                 fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 500 }}>LH</div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 500 }}>Linh Hoàng</div>
-                <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>head of growth · origin supps</div>
+                <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)" }}>sample partner profile · origin supps</div>
               </div>
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--hairline)",
             border: "1px solid var(--hairline)", borderRadius: 12, overflow: "hidden" }}>
-            {[["CAC change", "−62%"], ["Repeat purchase", "2.1×"], ["Match acceptance", "84%"], ["Brand trust score", "Top 1"]].map(([k, v]) => (
+            {[["Pilot planning", "Sample"], ["Repeat purchase", "Illustrative"], ["Match fit", "Scenario"], ["Brand trust", "Concept"]].map(([k, v]) => (
               <div key={k} style={{ background: "white", padding: 24 }}>
                 <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase" }}>{k}</div>
                 <div className="t-mono" style={{ fontSize: 32, fontWeight: 500, marginTop: 8, letterSpacing: "-0.02em" }}>{v}</div>
@@ -226,8 +226,8 @@ function CampaignCard() {
       position: "relative",
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
-        <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", letterSpacing: "0.16em", textTransform: "uppercase" }}>Campaign · live</span>
-        <span className="tier tier-4">Active</span>
+        <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", letterSpacing: "0.16em", textTransform: "uppercase" }}>Campaign · sample</span>
+        <span className="tier tier-4">Sample</span>
       </div>
       <div style={{ fontSize: 18, fontWeight: 500, color: "white" }}>Origin Supps · whey starter</div>
       <div className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>
@@ -236,7 +236,7 @@ function CampaignCard() {
 
       <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.10)",
         display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-        {[["Pool", "1,284"], ["Accept", "84%"], ["Cpa", "$1.42"]].map(([k, v]) => (
+        {[["Pool", "1,284"], ["Accept", "Sample"], ["CPA", "Demo"]].map(([k, v]) => (
           <div key={k}>
             <div className="t-mono" style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", letterSpacing: "0.16em", textTransform: "uppercase" }}>{k}</div>
             <div className="t-mono" style={{ fontSize: 24, fontWeight: 500, color: "white", marginTop: 4, letterSpacing: "-0.02em" }}>{v}</div>
@@ -273,7 +273,7 @@ function TargetingTool() {
       <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--hairline)",
         display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span className="t-eyebrow">Audience builder</span>
-        <span className="t-mono" style={{ fontSize: 11, color: "var(--mint)" }}>● live</span>
+        <span className="t-mono" style={{ fontSize: 11, color: "var(--mint)" }}>sample</span>
       </div>
       <div style={{ padding: 24 }}>
         <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 10 }}>Minimum tier</div>

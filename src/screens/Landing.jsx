@@ -5,7 +5,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { ShareButtons } from '../components/ShareButtons';
 
 const PROOF_EXAMPLES = [
-  { id: "run",  icon: "Run",      title: "10.4 km · 04:52 /km",  meta: "Garmin · HR 162 · auth ✓", value: "+48 sv" },
+  { id: "run",  icon: "Run",      title: "10.4 km · 04:52 /km",  meta: "Garmin · zone 3 · source ✓", value: "+48 sv" },
   { id: "swim", icon: "Swim",     title: "2,400 m freestyle",     meta: "Apple Watch · 38 min · auth ✓", value: "+32 sv" },
   { id: "bike", icon: "Bike",     title: "42.8 km loop",          meta: "Wahoo · 312 W avg · auth ✓", value: "+61 sv" },
   { id: "lift", icon: "Dumbbell", title: "Push session · 6×5",    meta: "Hevy log · RPE 8 · auth ✓", value: "+24 sv" },
@@ -65,15 +65,15 @@ export default function Landing({ onNav }) {
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--mint)" }} />
                   <span className="t-mono" style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.55)" }}>2,841 athletes verified this week</span>
+                    color: "rgba(255,255,255,0.55)" }}>Sample athlete activity preview</span>
                 </div>
                 <div style={{ height: 12, width: 1, background: "rgba(255,255,255,0.12)" }} />
                 <div style={{ display: "flex", alignItems: "center", gap: 14, color: "rgba(255,255,255,0.45)" }}>
-                  <span className="t-mono" style={{ fontSize: 11 }}>GARMIN</span>
+                  <span className="t-mono" style={{ fontSize: 11 }}>GARMIN*</span>
                   <span className="t-mono" style={{ fontSize: 11 }}>APPLE HEALTH</span>
                   <span className="t-mono" style={{ fontSize: 11 }}>STRAVA</span>
                   <span className="t-mono" style={{ fontSize: 11 }}>WHOOP</span>
-                  <span className="t-mono" style={{ fontSize: 11 }}>WAHOO</span>
+                  <span className="t-mono" style={{ fontSize: 11 }}>WAHOO*</span>
                 </div>
               </div>
             </div>
@@ -91,12 +91,12 @@ export default function Landing({ onNav }) {
           <div style={{ display: "flex", gap: 56, animation: "marquee 38s linear infinite", whiteSpace: "nowrap" }}>
             {Array.from({ length: 2 }).map((_, k) => (
               <React.Fragment key={k}>
-                <span>Proof.run · v3 · cryptographic effort attestation</span>
-                <span>2,841 athletes verified this week</span>
-                <span>17 brand partners live · sea region</span>
-                <span>14,892 badges earned ytd</span>
-                <span>Wcag aaa · soc 2 type ii · gdpr · ccpa</span>
-                <span>Zero data resold · ever</span>
+                <span>Demo verification flow · verified-source-ready</span>
+                <span>Sample athlete activity preview</span>
+                <span>Sample partner network · sea region</span>
+                <span>Mock activity data for product demo</span>
+                <span>Accessible design principles · security roadmap · privacy-first consent model</span>
+                <span>Privacy-first eligibility</span>
               </React.Fragment>
             ))}
           </div>
@@ -124,7 +124,7 @@ export default function Landing({ onNav }) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {[
-              { n: "01", title: "Connect your devices", body: "Link Garmin, Apple Health, Strava, Whoop, Wahoo. Cryptographic attestation runs locally — we read signals, never raw biometrics.", accent: "indigo", tag: "Proof" },
+              { n: "01", title: "Connect your devices", body: "Link Garmin, Apple Health, Strava, Whoop, Wahoo. Demo verification summarizes selected workout signals. Real source integrations are planned.", accent: "indigo", tag: "Proof" },
               { n: "02", title: "Train like you already do", body: "Every verified session adds to your Sweat Value. Consistency multiplies. Volume alone doesn't. The system rewards the long arc, not the sprint week.", accent: "signal", tag: "Momentum" },
               { n: "03", title: "Get matched", body: "Brands send offers tuned to your verified profile — recovery clinics, nutrition shops, race entries, gear. You hold the passport. You choose the match.", accent: "mint", tag: "Earned" },
             ].map(s => <StepRow key={s.n} {...s} onNav={onNav} />)}
@@ -155,7 +155,7 @@ export default function Landing({ onNav }) {
                 ["Consistency", "62%", "Weeks active over rolling 12mo"],
                 ["Variety", "18%", "Disciplines logged"],
                 ["Intensity", "12%", "Verified zone time"],
-                ["Recovery", "08%", "Sleep + HRV attested"],
+                ["Recovery", "08%", "Sleep + recovery signals"],
               ].map(([k, v, m]) => (
                 <div key={k} style={{ background: "white", padding: 20 }}>
                   <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.12em", textTransform: "uppercase" }}>{k}</div>
@@ -199,16 +199,16 @@ export default function Landing({ onNav }) {
           <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.1fr", gap: isMobile ? 32 : 64, alignItems: "center" }}>
             <div>
               <h2 className="t-h1" style={{ margin: 0 }}>
-                You can see the proof. <span style={{ color: "var(--muted)" }}>Brands can verify it. No one reads your data.</span>
+                You can see the summary. <span style={{ color: "var(--muted)" }}>Partners see eligibility status, not raw workout details.</span>
               </h2>
               <p style={{ marginTop: 20, color: "var(--muted)", fontSize: 16, maxWidth: 480 }}>
-                Every session you complete produces a signed proof artifact. Brand partners check the attestation, not the raw stream. Your heart rate never leaves your phone.
+                Every demo session produces a privacy-safe summary. Brand partners check eligibility status, not raw workout details. Raw health details are not shown to partners in this demo.
               </p>
               <ul style={{ marginTop: 28, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 14 }}>
                 {[
-                  ["Device attestation", "Hardware signs the session locally"],
-                  ["Effort signal", "Derived metric — heart rate, pace, power"],
-                  ["Zero-knowledge match", "Brand verifies tier without seeing details"],
+                  ["Session summary", "Verified-source-ready session summary"],
+                  ["Effort signal", "Selected workout signals — pace, power, consistency"],
+                  ["Partner eligibility check", "Brand sees fit without raw workout details"],
                 ].map(([k, v]) => (
                   <li key={k} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                     <div style={{ marginTop: 2 }}><Icon.CheckCircle size={20} color="var(--mint)" /></div>
@@ -238,7 +238,7 @@ export default function Landing({ onNav }) {
           </h2>
           <div>
             <p style={{ color: "var(--muted)", fontSize: 16, marginTop: 0 }}>
-              Premium supplement shops, race organizers, recovery clinics and sportswear retailers use PM Sweat to target verified athletes — not lookalike audiences, not self-reported claims.
+              Premium supplement shops, race organizers, recovery clinics and sportswear retailers can use PM Sweat to plan privacy-first athlete campaigns — not lookalike audiences, not self-reported claims.
             </p>
             <button className="btn btn-primary" style={{ marginTop: 20 }} onClick={() => onNav("partners")}>
               Partner with PM Sweat <Icon.ArrowUpRight size={14} />
@@ -248,10 +248,10 @@ export default function Landing({ onNav }) {
 
         <div style={{ marginTop: 56, display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: isMobile ? 12 : 16 }}>
           {[
-            { k: "Match precision", v: "94%", m: "Verified profile vs. campaign brief" },
-            { k: "Engagement uplift", v: "3.4×", m: "vs. generic athlete ads" },
-            { k: "Wasted impressions", v: "−71%", m: "No fake activity or padded claims" },
-            { k: "Partner satisfaction", v: "4.8/5", m: "17 brands · sea region pilot" },
+            { k: "Campaign fit", v: "Sample", m: "Illustrative metrics for pilot planning" },
+            { k: "Audience signal", v: "Demo", m: "Privacy-first eligibility preview" },
+            { k: "Wasted impressions", v: "Lower", m: "Modeled against self-reported claims" },
+            { k: "Partner network", v: "Pilot", m: "Sample partner network · sea region" },
           ].map(s => (
             <div key={s.k} className="card" style={{ position: "relative" }}>
               <div className="t-mono" style={{ fontSize: 11, color: "var(--muted)", letterSpacing: "0.12em", textTransform: "uppercase" }}>{s.k}</div>
@@ -313,11 +313,11 @@ function ProofTicker({ tick, items }) {
     }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
         <span className="t-mono" style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase",
-          color: "rgba(255,255,255,0.55)" }}>Live · proof feed</span>
+          color: "rgba(255,255,255,0.55)" }}>Demo · activity feed</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
           <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--mint)",
             boxShadow: "0 0 0 4px rgba(16,185,129,0.18)" }} />
-          <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>streaming</span>
+          <span className="t-mono" style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>sample data</span>
         </span>
       </div>
 
@@ -437,7 +437,7 @@ function BadgeLadder({ onNav }) {
   const isMobile = useIsMobile();
   const tiers = [
     { n: "01", name: "Foundation", desc: "Verified, consistent for 4+ weeks", count: "All members", cls: "tier-1" },
-    { n: "02", name: "Proof", desc: "Locked in 12 weeks of attested effort", count: "62%", cls: "tier-2" },
+    { n: "02", name: "Proof", desc: "Completed 12 weeks of verified-source-ready effort", count: "Sample", cls: "tier-2" },
     { n: "03", name: "Signal", desc: "6 months · 2+ disciplines · zone discipline", count: "28%", cls: "tier-3" },
     { n: "04", name: "Momentum", desc: "12 months · streak intact · top quartile", count: "8%", cls: "tier-4" },
     { n: "05", name: "Mastery", desc: "24 months · verified across categories", count: "2%", cls: "tier-5" },
@@ -483,14 +483,14 @@ function VerificationDemo() {
     const id = setInterval(() => setStage(s => (s + 1) % 4), 1800);
     return () => clearInterval(id);
   }, []);
-  const stages = ["Captured", "Signed", "Attested", "Matched"];
+  const stages = ["Captured", "Summarized", "Verified", "Matched"];
   return (
     <div style={{
       background: "white", border: "1px solid var(--hairline)", borderRadius: 16,
       padding: 28, position: "relative", overflow: "hidden", boxShadow: "var(--sh-2)",
     }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-        <span className="t-eyebrow">Proof artifact · 0x7a…3c1f</span>
+        <span className="t-eyebrow">Demo verification summary</span>
         <span className="tier tier-1">Verified</span>
       </div>
 
@@ -522,9 +522,9 @@ function VerificationDemo() {
         {[
           ["session", "morning run · 10.4 km"],
           ["device", "garmin fenix 7s"],
-          ["effort", "162 bpm avg · zone 3"],
+          ["effort", "zone 3 · selected signals"],
           ["duration", "00:50:48"],
-          ["signature", "ed25519 · valid"],
+          ["verification", "verified-source-ready"],
           ["sv earned", "+48"],
         ].map(([k, v], i) => (
           <div key={k} style={{

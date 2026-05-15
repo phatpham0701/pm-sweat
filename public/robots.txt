@@ -1,12 +1,21 @@
 # PM Sweat robots.txt
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /workouts
+Disallow: /leaderboards
+Disallow: /friends
+Disallow: /insights
+Disallow: /goals
+Disallow: /notifications
+Disallow: /badges
+Disallow: /badge
+Disallow: /login
+Disallow: /signup
+Disallow: /onboarding
 Disallow: /admin
 Disallow: /private
 Disallow: /api
 
-# Crawl delay
-Crawl-delay: 1
-
-# Sitemaps
 Sitemap: https://pm-sweat.vercel.app/sitemap.xml
