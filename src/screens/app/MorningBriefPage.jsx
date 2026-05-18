@@ -15,7 +15,7 @@ const DECISION_STYLES = {
 
 export default function MorningBriefPage() {
   const { user } = useAuthStore();
-  const { profile, addMorningBrief, upsertJournalEntry, getDaysSinceStart, getTodaysBrief, morningBriefs, journal } = useTrainingStore();
+  const { profile, addMorningBrief, upsertJournalEntry, getDaysSinceStart, getTodaysBrief, morningBriefs } = useTrainingStore();
   const brief = getTodaysBrief();
   const [view, setView] = useState(brief ? 'result' : 'form');
 

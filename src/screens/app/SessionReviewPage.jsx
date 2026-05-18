@@ -236,10 +236,6 @@ function ReviewForm({ brief, userId, onSaved }) {
 function ReviewResult({ brief, journalEntry, onRedo }) {
   const entry = journalEntry;
   const score = entry?.smartSweatScore;
-  const alreadyReviewed = entry?.actualTrainingSummary != null;
-
-  const briefStyle = DECISION_STYLES_MAP[brief?.decision] || DECISION_STYLES_MAP.modify;
-
   return (
     <div style={{ maxWidth: 520, margin: '0 auto', padding: '28px 20px 40px' }}>
       <p className="t-eyebrow" style={{ marginBottom: 6 }}>Today — {today()}</p>
