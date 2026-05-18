@@ -338,12 +338,6 @@ function NumField({ label, value, onChange, placeholder, min, max, step }) {
   );
 }
 
-const DECISION_STYLES_MAP = {
-  rest:    { color: '#DC2626', border: '#FCA5A5', bg: '#FFF1F2' },
-  recover: { color: '#D97706', border: '#FCD34D', bg: '#FFFBEB' },
-  modify:  { color: '#6366F1', border: '#A5B4FC', bg: '#EEF2FF' },
-  train:   { color: '#059669', border: '#6EE7B7', bg: '#ECFDF5' },
-};
 
 function buildActualSummary(session, briefDecision) {
   if (!session) {
