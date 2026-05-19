@@ -61,4 +61,25 @@ export const tiStorage = {
   },
 
   clearAll: () => Object.values(KEYS).forEach((k) => localStorage.removeItem(k)),
+
+  saveSnapshot(profileId) {
+    const snapshot = {};
+    Object.entries(KEYS).forEach(([k, storageKey]) => {
+      const val = localStorage.getItem(storageKey);
+      if (val !== null) snapshot[k] = val;
+    });
+    try { localStorage.setItem(`pmsweat_ti_snap_${profileId}`, JSON.stringify(snapshot)); } catch {}
+  },
+
+  restoreSnapshot(profileId) {
+    try {
+      const raw = localStorage.getItem(`pmsweat_ti_snap_${profileId}`);
+      Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
+      if (!raw) return;
+      const snapshot = JSON.parse(raw);
+      Object.entries(KEYS).forEach(([k, storageKey]) => {
+        if (snapshot[k] != null) localStorage.setItem(storageKey, snapshot[k]);
+      });
+    } catch {}
+  },
 };

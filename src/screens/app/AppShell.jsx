@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useTrainingStore } from '../../stores/trainingStore';
 import { getBetaStatus, applyPromoCode } from '../../lib/training-intelligence/betaAccess';
+import { ProfileSwitcher } from '../../components/ProfileSwitcher';
 
 const NAV = [
   { to: '/app/dashboard', label: 'Today', icon: SunIcon },
@@ -37,6 +38,8 @@ export default function AppShell() {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--white)' }}>
       {betaStatus && <BetaBanner status={betaStatus} />}
 
+      <ProfileSwitcherBar />
+
       <main style={{ flex: 1, overflowY: 'auto', paddingBottom: 64 }}>
         <Outlet />
       </main>
@@ -64,6 +67,22 @@ export default function AppShell() {
 
       {/* Beta expired overlay — blocks access until promo code is entered */}
       {isExpired && <BetaExpiredModal onSuccess={handlePromoSuccess} />}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Profile switcher bar (visible for demo accounts only)
+// ---------------------------------------------------------------------------
+
+function ProfileSwitcherBar() {
+  return (
+    <div style={{
+      display: 'flex', justifyContent: 'flex-end', alignItems: 'center',
+      padding: '6px 16px', borderBottom: '1px solid var(--hairline)',
+      minHeight: 40,
+    }}>
+      <ProfileSwitcher />
     </div>
   );
 }
